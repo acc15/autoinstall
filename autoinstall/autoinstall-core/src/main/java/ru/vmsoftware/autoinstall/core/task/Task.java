@@ -13,6 +13,24 @@ import java.util.List;
 public interface Task {
 
     /**
+     * Returns custom description of this task
+     * @return description of this task
+     */
+    String getDescription();
+
+    /**
+     * Sets description for this task
+     * @param description new description for this task
+     */
+    void setDescription(String description);
+
+    /**
+     * Returns approximately cost of this task (this parameter is required for progress bar processing)
+     * @return approximate cost of this task
+     */
+    //int getCost(ExecutionContext context) throws TaskException;
+
+    /**
      * Executes task
      * @param context context for getting parameters and reporting progress
      */
@@ -34,7 +52,9 @@ public interface Task {
 
     /**
      * Returns list of parameters which current task declares.
-     * @return
+     * Note that returned list can be modified and provides
+     * interface for adding, removing and modifying task parameters.
+     * @return modifiable list of parameters.
      */
     List<Parameter<?>> getParameters();
 

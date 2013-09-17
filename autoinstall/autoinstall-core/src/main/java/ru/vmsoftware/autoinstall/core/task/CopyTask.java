@@ -1,7 +1,6 @@
 package ru.vmsoftware.autoinstall.core.task;
 
 import ru.vmsoftware.autoinstall.core.ExecutionContext;
-import ru.vmsoftware.autoinstall.core.params.Parameter;
 import ru.vmsoftware.autoinstall.core.params.ParameterDesc;
 
 import java.io.File;
@@ -12,7 +11,7 @@ import java.util.List;
  * @author Vyacheslav Mayorov
  * @since 2013-17-09
  */
-public class CopyTask implements Task {
+public class CopyTask extends AbstractLeafTask {
 
     private static final ParameterDesc<File> SOURCE_PATH = new ParameterDesc<>("sourcePath", File.class);
     private static final ParameterDesc<String> TARGET_PATH = new ParameterDesc<>("targetPath", String.class);
@@ -40,14 +39,13 @@ public class CopyTask implements Task {
 
 
     @Override
-    public void execute(ExecutionContext context) {
+    public void execute(ExecutionContext context) throws TaskException{
+        final File sourceFile = SOURCE_PATH.getValue(context);
+        final String targetPath = TARGET_PATH.getValue(context);
+        final CopyMode copyMode = COPY_MODE.getValue(context);
+
         // TODO implement..
 
-    }
-
-    @Override
-    public List<Task> getChildren() {
-        return null;
     }
 
     @Override
@@ -55,9 +53,4 @@ public class CopyTask implements Task {
         return Arrays.<ParameterDesc<?>>asList(SOURCE_PATH, TARGET_PATH, COPY_MODE);
     }
 
-    @Override
-    public List<Parameter<?>> getParameters() {
-        // TODO implement..
-        return null;
-    }
 }
