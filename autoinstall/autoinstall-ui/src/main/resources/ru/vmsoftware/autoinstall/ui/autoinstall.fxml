@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.lang.*?>
+<?import java.lang.String?>
 <?import java.net.*?>
-<?import java.util.*?>
+<?import java.net.URL?>
 <?import javafx.collections.*?>
+<?import javafx.collections.FXCollections?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.paint.*?>
 
 <AnchorPane id="AnchorPane" maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" opacity="1.0" prefHeight="300.0" prefWidth="500.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="ru.vmsoftware.autoinstall.ui.AutoInstallController">
   <children>
@@ -25,9 +29,24 @@
               <contextMenu>
                 <ContextMenu>
                   <items>
-                    <MenuItem mnemonicParsing="false" text="%key.addChildTask" />
-                    <MenuItem mnemonicParsing="false" text="%key.addSiblingTask" />
-                    <MenuItem mnemonicParsing="false" text="%key.deleteTask" />
+                    <MenuItem mnemonicParsing="false" text="%key.addTask" fx:id="addChildTask">
+                      <graphic>
+                        <ImageView>
+                          <image>
+                            <Image url="@autoinstall-add.png" />
+                          </image>
+                        </ImageView>
+                      </graphic>
+                    </MenuItem>
+                    <MenuItem mnemonicParsing="false" text="%key.deleteTask" fx:id="deleteTask">
+                      <graphic>
+                        <ImageView>
+                          <image>
+                            <Image url="@autoinstall-delete.png" />
+                          </image>
+                        </ImageView>
+                      </graphic>
+                    </MenuItem>
                   </items>
                 </ContextMenu>
               </contextMenu>
