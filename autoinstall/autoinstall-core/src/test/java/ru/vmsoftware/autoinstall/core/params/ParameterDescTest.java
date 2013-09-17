@@ -1,8 +1,8 @@
-package ru.vmsoftware.autoinstall.core;
+package ru.vmsoftware.autoinstall.core.params;
 
 import org.junit.Test;
 import org.mockito.Mockito;
-import ru.vmsoftware.autoinstall.core.params.ParameterDesc;
+import ru.vmsoftware.autoinstall.core.ExecutionContext;
 import ru.vmsoftware.autoinstall.core.task.TaskException;
 
 import static org.fest.assertions.Assertions.assertThat;

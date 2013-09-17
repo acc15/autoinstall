@@ -43,10 +43,12 @@ public interface Task {
     List<Task> getChildren();
 
     /**
-     * Returns {@link java.util.Collections#unmodifiableList(java.util.List) unmodifiable} list of all parameters
+     * Returns list of all parameters
      * which current task can accept (but this doesn't mean that all of it will be used).
-     * Note that composite tasks should not inherit this definitions
-     * @return {@link java.util.Collections#unmodifiableList(java.util.List) unmodifiable} list of parameters description
+     * Note that composite tasks should not inherit this definitions from children. By the way returned list
+     * must be either immutable or task should build this list every time definitions is request. This means that
+     * this method should be implemented in a way which permits modification of task internal state
+     * @return list of parameter descriptions
      */
     List<ParameterDesc<?>> getParameterDefinitions();
 

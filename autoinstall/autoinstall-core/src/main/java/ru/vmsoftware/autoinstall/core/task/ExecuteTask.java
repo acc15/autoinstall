@@ -4,6 +4,7 @@ import ru.vmsoftware.autoinstall.core.ExecutionContext;
 import ru.vmsoftware.autoinstall.core.params.ParameterDesc;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -29,8 +30,7 @@ public class ExecuteTask extends AbstractLeafTask {
 
     @Override
     public List<ParameterDesc<?>> getParameterDefinitions() {
-        // TODO implement..
-        return null;
+        return Arrays.<ParameterDesc<?>>asList(EXECUTABLE, EXECUTION_MODE);
     }
 
 }
