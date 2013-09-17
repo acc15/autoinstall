@@ -1,4 +1,8 @@
-package ru.vmsoftware.autoinstall.core;
+package ru.vmsoftware.autoinstall.core.task;
+
+import ru.vmsoftware.autoinstall.core.ExecutionContext;
+import ru.vmsoftware.autoinstall.core.params.Parameter;
+import ru.vmsoftware.autoinstall.core.params.ParameterDesc;
 
 import java.io.File;
 import java.util.Arrays;

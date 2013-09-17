@@ -1,4 +1,4 @@
-package ru.vmsoftware.autoinstall.core;
+package ru.vmsoftware.autoinstall.core.params;
 
 /**
  * @author Vyacheslav Mayorov

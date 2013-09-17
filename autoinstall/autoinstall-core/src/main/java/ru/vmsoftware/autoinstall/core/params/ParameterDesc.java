@@ -1,4 +1,7 @@
-package ru.vmsoftware.autoinstall.core;
+package ru.vmsoftware.autoinstall.core.params;
+
+import ru.vmsoftware.autoinstall.core.ExecutionContext;
+import ru.vmsoftware.autoinstall.core.task.TaskException;
 
 /**
  * @author Vyacheslav Mayorov
@@ -32,6 +35,25 @@ public class ParameterDesc<T> {
         this.name = name;
         this.type = type;
         this.defaultValue = defaultValue;
+    }
+
+    /**
+     * Evaluates parameter described by this object using context
+     * @param context evaluation context
+     * @return {@link ExecutionContext#getParameter(String, Class) parameter} returned from context
+     *      or {@link #getDefaultValue() default value} specified in this descriptor
+     * @throws TaskException in case when mandatory parameter is missing or have illegal type
+     * @see ExecutionContext#getParameter(String, Class)
+     */
+    public T getValue(ExecutionContext context) throws TaskException {
+        final T value = context.getParameter(name, type);
+        if (value != null) {
+            return value;
+        }
+        if (defaultValue == null) {
+            throw new TaskException("mandatory parameter \"" + name + "\" missing in context");
+        }
+        return defaultValue;
     }
 
     /**
