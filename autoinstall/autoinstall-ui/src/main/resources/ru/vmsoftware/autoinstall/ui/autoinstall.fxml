@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+
+<AnchorPane id="AnchorPane" maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" opacity="1.0" prefHeight="300.0" prefWidth="500.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="ru.vmsoftware.autoinstall.ui.AutoInstallController">
+  <children>
+    <Label fx:id="titleLabel" prefHeight="14.0" text="%key.title" textAlignment="LEFT" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="16.0">
+      <labelFor>
+        <Button fx:id="installButton" alignment="CENTER" mnemonicParsing="false" onAction="#installClick" prefHeight="22.0" prefWidth="83.0" text="%key.installButton" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0" />
+      </labelFor>
+    </Label>
+    <fx:reference source="installButton" />
+    <SplitPane dividerPositions="0.32553191489361705" focusTraversable="true" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="48.0">
+      <items>
+        <AnchorPane id="AnchorPane" minWidth="150.0" prefHeight="358.0" prefWidth="147.0">
+          <children>
+            <Label text="%key.taskListLabel" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0" />
+            <TreeView fx:id="taskList" prefHeight="317.0" prefWidth="238.0" AnchorPane.bottomAnchor="13.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="28.0" />
+          </children>
+        </AnchorPane>
+        <ScrollPane id="taskProperties" fitToHeight="false" fitToWidth="true" hbarPolicy="NEVER" prefViewportHeight="236.0" prefViewportWidth="306.0">
+          <content>
+            <VBox alignment="TOP_LEFT" disable="false" fillWidth="true" focusTraversable="false" minWidth="150.0" prefWidth="321.0" snapToPixel="true" spacing="0.0">
+              <children>
+                <TitledPane fx:id="x1" animated="false" text="%key.commonPane">
+                  <content>
+                    <AnchorPane id="AnchorPane" prefHeight="79.0" prefWidth="302.0" />
+                  </content>
+                </TitledPane>
+                <TitledPane animated="false" expanded="false" text="%key.conditionsPane">
+                  <content>
+                    <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="57.0" prefWidth="302.0" />
+                  </content>
+                </TitledPane>
+                <TitledPane fx:id="x2" animated="false" expanded="false" text="%key.parametersPane">
+                  <content>
+                    <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="35.0" prefWidth="302.0" />
+                  </content>
+                </TitledPane>
+              </children>
+            </VBox>
+          </content>
+        </ScrollPane>
+      </items>
+    </SplitPane>
+  </children>
+  <stylesheets>
+    <URL value="@autoinstall.css" />
+  </stylesheets>
+</AnchorPane>

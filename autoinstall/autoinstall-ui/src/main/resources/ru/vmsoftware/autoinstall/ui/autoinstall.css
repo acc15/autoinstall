@@ -1,0 +1,12 @@
+#titleLabel {
+    -fx-font-size: 15pt;
+    -fx-font-weight: bold;
+}
+
+#installButton {
+    -fx-font-weight: bold;
+}
+
+#taskProperties {
+    -fx-background-color: lightgray;
+}
