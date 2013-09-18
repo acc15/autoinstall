@@ -1,4 +1,4 @@
-package ru.vmsoftware.autoinstall.core.task.factory;
+package ru.vmsoftware.autoinstall.core.task.registry;
 
 import ru.vmsoftware.autoinstall.core.task.*;
 
@@ -10,7 +10,7 @@ import java.util.List;
  * @author Vyacheslav Mayorov
  * @since 2013-18-09
  */
-public class DefaultTaskFactory implements TaskFactory {
+public class DefaultTaskRegistry implements TaskRegistry {
 
     private static final List<TaskDefinition<?>> DEFINITIONS = Arrays.<TaskDefinition<?>>asList(
             CompositeTask.DEFINITION,
@@ -19,9 +19,9 @@ public class DefaultTaskFactory implements TaskFactory {
             RegistryTask.DEFINITION
     );
 
-    private static final DefaultTaskFactory instance = new DefaultTaskFactory();
+    private static final DefaultTaskRegistry instance = new DefaultTaskRegistry();
 
-    public static TaskFactory getInstance() {
+    public static TaskRegistry getInstance() {
         return instance;
     }
 
@@ -30,11 +30,6 @@ public class DefaultTaskFactory implements TaskFactory {
         return Collections.unmodifiableList(DEFINITIONS);
     }
 
-    @Override
-    public <T extends Task> T createTask(TaskDefinition<T> definition) {
-        return definition.createTask();
-    }
-
-    private DefaultTaskFactory() {
+    private DefaultTaskRegistry() {
     }
 }

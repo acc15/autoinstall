@@ -12,8 +12,9 @@ import javafx.scene.image.ImageView;
 import javafx.util.StringConverter;
 import ru.vmsoftware.autoinstall.core.task.Task;
 import ru.vmsoftware.autoinstall.core.task.TaskDefinition;
-import ru.vmsoftware.autoinstall.core.task.factory.DefaultTaskFactory;
-import ru.vmsoftware.autoinstall.core.task.factory.TaskFactory;
+import ru.vmsoftware.autoinstall.core.task.TaskUtils;
+import ru.vmsoftware.autoinstall.core.task.registry.DefaultTaskRegistry;
+import ru.vmsoftware.autoinstall.core.task.registry.TaskRegistry;
 
 import java.net.URL;
 import java.util.Map;
@@ -46,8 +47,8 @@ public class AutoInstallController implements Initializable {
 
     private Map<String,Image> cachedIcons = new WeakHashMap<>();
 
-    private static TaskFactory getTaskFactory() {
-        return DefaultTaskFactory.getInstance();
+    private static TaskRegistry getTaskFactory() {
+        return DefaultTaskRegistry.getInstance();
     }
 
     private ImageView getIconForTask(TaskDefinition<?> taskDefinition) {
@@ -161,9 +162,8 @@ public class AutoInstallController implements Initializable {
                     return;
                 }
 
-                final Task oldTask = item.getValue();
-                final Task newTask = getTaskFactory().createTask(newDefinition);
-                newTask.setDescription(oldTask.getDescription());
+                final Task newTask = newDefinition.createTask();
+                TaskUtils.copyTaskData(item.getValue(), newTask);
                 item.setGraphic(getIconForTask(newTask.getDefinition()));
                 item.setValue(newTask);
                 updateMenuItemsForSelectedTreeItem(item);
@@ -198,6 +198,8 @@ public class AutoInstallController implements Initializable {
 
     @FXML
     public void deleteTaskClick() {
+        final TreeItem<Task> selectedItem = taskList.getSelectionModel().getSelectedItem();
+
 
     }
 

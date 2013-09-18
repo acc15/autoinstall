@@ -1,4 +1,4 @@
-package ru.vmsoftware.autoinstall.core.task.factory;
+package ru.vmsoftware.autoinstall.core.task.registry;
 
 import org.junit.Test;
 import ru.vmsoftware.autoinstall.core.task.*;
@@ -13,7 +13,7 @@ import static org.fest.assertions.Assertions.assertThat;
  */
 public class DefaultTaskFactoryTest {
 
-    private TaskFactory factory = DefaultTaskFactory.getInstance();
+    private TaskRegistry factory = DefaultTaskRegistry.getInstance();
 
     @Test(expected = UnsupportedOperationException.class)
     public void testGetAvailableTasksNotModifiable() throws Exception {
@@ -31,9 +31,4 @@ public class DefaultTaskFactoryTest {
                 ExecuteTask.DEFINITION);
     }
 
-    @Test
-    public void testCreateTask() throws Exception {
-        final CopyTask copyTask = factory.createTask(CopyTask.DEFINITION);
-        assertThat(copyTask).isInstanceOf(CopyTask.class);
-    }
 }
