@@ -10,11 +10,11 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.StringConverter;
+import ru.vmsoftware.autoinstall.core.action.ActionDefinition;
+import ru.vmsoftware.autoinstall.core.action.ActionRegistry;
+import ru.vmsoftware.autoinstall.core.action.DefaultActionRegistry;
+import ru.vmsoftware.autoinstall.core.action.NullAction;
 import ru.vmsoftware.autoinstall.core.task.Task;
-import ru.vmsoftware.autoinstall.core.task.TaskDefinition;
-import ru.vmsoftware.autoinstall.core.task.TaskUtils;
-import ru.vmsoftware.autoinstall.core.task.registry.DefaultTaskRegistry;
-import ru.vmsoftware.autoinstall.core.task.registry.TaskRegistry;
 
 import java.net.URL;
 import java.util.Map;
@@ -31,7 +31,7 @@ public class AutoInstallController implements Initializable {
     private TreeView<Task> taskList;
 
     @FXML
-    private ComboBox<TaskDefinition<?>> taskTypeComboBox;
+    private ComboBox<ActionDefinition<?>> taskTypeComboBox;
 
     @FXML
     private TextField taskDescriptionTextField;
@@ -44,37 +44,36 @@ public class AutoInstallController implements Initializable {
 
     private ResourceBundle resourceBundle;
 
-
     private Map<String,Image> cachedIcons = new WeakHashMap<>();
 
-    private static TaskRegistry getTaskFactory() {
-        return DefaultTaskRegistry.getInstance();
+    private static ActionRegistry getActionRegistry() {
+        return DefaultActionRegistry.getInstance();
     }
 
-    private ImageView getIconForTask(TaskDefinition<?> taskDefinition) {
-        final String name = taskDefinition.getName();
+    private ImageView getIconForTask(Task task) {
+        final String name = task.getAction().getDefinition().getName();
         Image icon = cachedIcons.get(name);
         if (icon == null) {
             icon = new Image(
-                    AutoInstallController.class.getResource(name + ".png").toExternalForm());
+                    AutoInstallController.class.getResource(name + "-action.png").toExternalForm());
             cachedIcons.put(name, icon);
         }
         return new ImageView(icon);
     }
 
     private CheckBoxTreeItem<Task> createTaskItem(String initialDescriptionKey) {
-        final Task newTask = getTaskFactory().getAvailableTasks().get(0).createTask();
-        newTask.setDescription(resourceBundle.getString(initialDescriptionKey));
+        final Task task = new Task();
+        task.setDescription(resourceBundle.getString(initialDescriptionKey));
 
-        final CheckBoxTreeItem<Task> item = new CheckBoxTreeItem<>(newTask, getIconForTask(newTask.getDefinition()));
+        final CheckBoxTreeItem<Task> item = new CheckBoxTreeItem<>(task, getIconForTask(task));
         item.setIndependent(true);
-        item.setSelected(newTask.isActive());
+        item.setSelected(task.isActive());
         item.selectedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observableValue,
                                 Boolean oldValue,
                                 Boolean newValue) {
-                newTask.setActive(newValue);
+                task.setActive(newValue);
             }
         });
         return item;
@@ -86,8 +85,13 @@ public class AutoInstallController implements Initializable {
             addTaskMenuItem.setDisable(true);
             return;
         }
-        addTaskMenuItem.setDisable(selectedItem.getValue().getChildren() == null);
+        addTaskMenuItem.setDisable(selectedItem.getValue().getAction() != NullAction.getInstance());
         deleteTaskMenuItem.setDisable(selectedItem.getParent() == null);
+    }
+
+    private static void fireChangeEvent(TreeItem<Task> selectedItem) {
+        Event.fireEvent(selectedItem, new TreeItem.TreeModificationEvent<>(
+                TreeItem.valueChangedEvent(), selectedItem, selectedItem.getValue()));
     }
 
     @FXML
@@ -126,31 +130,31 @@ public class AutoInstallController implements Initializable {
                 final Task task = newItem.getValue();
                 taskDescriptionTextField.setText(task.getDescription());
                 taskTypeComboBox.setDisable(!newItem.getChildren().isEmpty());
-                taskTypeComboBox.setValue(task.getDefinition());
+                taskTypeComboBox.setValue(task.getAction().getDefinition());
             }
         });
 
         taskList.setRoot(createTaskItem("task.rootInitialDescription"));
 
-        taskTypeComboBox.setItems(new ObservableListWrapper<>(getTaskFactory().getAvailableTasks()));
-        taskTypeComboBox.setConverter(new StringConverter<TaskDefinition<?>>() {
+        taskTypeComboBox.setItems(new ObservableListWrapper<>(getActionRegistry().getAvailableActions()));
+        taskTypeComboBox.setConverter(new StringConverter<ActionDefinition<?>>() {
             @Override
-            public String toString(TaskDefinition<?> definition) {
+            public String toString(ActionDefinition<?> definition) {
                 return resourceBundle.getString(definition != null
                         ? "task." + definition.getName()
                         : "key.chooseTaskType");
             }
 
             @Override
-            public TaskDefinition<?> fromString(String s) {
+            public ActionDefinition<?> fromString(String s) {
                 return null;
             }
         });
-        taskTypeComboBox.valueProperty().addListener(new ChangeListener<TaskDefinition<?>>() {
+        taskTypeComboBox.valueProperty().addListener(new ChangeListener<ActionDefinition<?>>() {
             @Override
-            public void changed(ObservableValue<? extends TaskDefinition<?>> observableValue,
-                                TaskDefinition<?> oldDefinition,
-                                TaskDefinition<?> newDefinition) {
+            public void changed(ObservableValue<? extends ActionDefinition<?>> observableValue,
+                                ActionDefinition<?> oldDefinition,
+                                ActionDefinition<?> newDefinition) {
                 final TreeItem<Task> item = taskList.getSelectionModel().getSelectedItem();
                 if (item == null && newDefinition != null) {
                     throw new IllegalStateException("no item is selected in TreeView but task type was modified");
@@ -162,11 +166,10 @@ public class AutoInstallController implements Initializable {
                     return;
                 }
 
-                final Task newTask = newDefinition.createTask();
-                TaskUtils.copyTaskData(item.getValue(), newTask);
-                item.setGraphic(getIconForTask(newTask.getDefinition()));
-                item.setValue(newTask);
+                item.getValue().setAction(newDefinition.getAction());
+                item.setGraphic(getIconForTask(item.getValue()));
                 updateMenuItemsForSelectedTreeItem(item);
+                fireChangeEvent(item);
 
             }
         });
@@ -181,8 +184,7 @@ public class AutoInstallController implements Initializable {
 
                 final Task task = selectedItem.getValue();
                 task.setDescription(newValue);
-                Event.fireEvent(selectedItem, new TreeItem.TreeModificationEvent<>(
-                        TreeItem.valueChangedEvent(), selectedItem, task));
+                fireChangeEvent(selectedItem);
             }
         });
 
