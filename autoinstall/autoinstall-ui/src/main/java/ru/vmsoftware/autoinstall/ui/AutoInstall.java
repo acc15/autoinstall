@@ -7,7 +7,6 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -37,7 +36,6 @@ public class AutoInstall extends Application {
         stage.setMinHeight(MIN_HEIGHT);
         stage.setTitle(resourceBundle.getString("key.title"));
         stage.setScene(scene);
-        List<String> a = scene.getStylesheets();
 
         stage.getIcons().add(new Image(AutoInstall.class.getResource("autoinstall.png").toString()));
         stage.show();

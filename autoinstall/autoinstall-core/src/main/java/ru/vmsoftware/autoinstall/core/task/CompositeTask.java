@@ -11,6 +11,18 @@ import java.util.List;
  */
 public class CompositeTask extends AbstractTask {
 
+    public static final TaskDefinition<CompositeTask> DEFINITION = new TaskDefinition<CompositeTask>() {
+        @Override
+        public String getName() {
+            return "composite";
+        }
+
+        @Override
+        public CompositeTask createTask() {
+            return new CompositeTask();
+        }
+    };
+
     @Override
     public void execute(ExecutionContext context) throws TaskException{
         for (final Task child: children) {
@@ -24,6 +36,11 @@ public class CompositeTask extends AbstractTask {
     @Override
     public List<Task> getChildren() {
         return children;
+    }
+
+    @Override
+    public TaskDefinition<?> getDefinition() {
+        return DEFINITION;
     }
 
     private List<Task> children = new ArrayList<>();

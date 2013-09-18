@@ -13,8 +13,17 @@ import java.util.List;
  */
 public abstract class AbstractTask implements Task {
 
+    private boolean active = true;
     private String description = "";
     private List<Parameter<?>> parameters = new ArrayList<>();
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 
     public final String getDescription() {
         return description;

@@ -13,6 +13,18 @@ import java.util.List;
  */
 public class CopyTask extends AbstractLeafTask {
 
+    public static final TaskDefinition<CopyTask> DEFINITION = new TaskDefinition<CopyTask>() {
+        @Override
+        public String getName() {
+            return "copy";
+        }
+
+        @Override
+        public CopyTask createTask() {
+            return new CopyTask();
+        }
+    };
+
     private static final ParameterDesc<File> SOURCE_PATH = new ParameterDesc<>("sourcePath", File.class);
     private static final ParameterDesc<String> TARGET_PATH = new ParameterDesc<>("targetPath", String.class);
     private static final ParameterDesc<CopyMode> COPY_MODE = new ParameterDesc<>(
@@ -53,4 +65,8 @@ public class CopyTask extends AbstractLeafTask {
         return Arrays.<ParameterDesc<?>>asList(SOURCE_PATH, TARGET_PATH, COPY_MODE);
     }
 
+    @Override
+    public TaskDefinition<?> getDefinition() {
+        return DEFINITION;
+    }
 }

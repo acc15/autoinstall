@@ -13,6 +13,18 @@ import java.util.List;
  */
 public class ExecuteTask extends AbstractLeafTask {
 
+    public static final TaskDefinition<ExecuteTask> DEFINITION = new TaskDefinition<ExecuteTask>() {
+        @Override
+        public String getName() {
+            return "execute";
+        }
+
+        @Override
+        public ExecuteTask createTask() {
+            return new ExecuteTask();
+        }
+    };
+
     private static final ParameterDesc<File> EXECUTABLE = new ParameterDesc<>("executable", File.class);
     private static final ParameterDesc<ExecutionMode> EXECUTION_MODE = new ParameterDesc<>("executionMode",
             ExecutionMode.class, ExecutionMode.WAIT_FOR_FINISH);
@@ -31,6 +43,11 @@ public class ExecuteTask extends AbstractLeafTask {
     @Override
     public List<ParameterDesc<?>> getParameterDefinitions() {
         return Arrays.<ParameterDesc<?>>asList(EXECUTABLE, EXECUTION_MODE);
+    }
+
+    @Override
+    public TaskDefinition<?> getDefinition() {
+        return DEFINITION;
     }
 
 }

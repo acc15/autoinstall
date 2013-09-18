@@ -11,6 +11,18 @@ import java.util.List;
  */
 public class RegistryTask extends AbstractLeafTask {
 
+    public static final TaskDefinition<RegistryTask> DEFINITION = new TaskDefinition<RegistryTask>() {
+        @Override
+        public String getName() {
+            return "registry";
+        }
+
+        @Override
+        public RegistryTask createTask() {
+            return new RegistryTask();
+        }
+    };
+
     private static final ParameterDesc<String> REGISTRY_KEY = new ParameterDesc<>("registryKey", String.class);
 
     @Override
@@ -23,5 +35,10 @@ public class RegistryTask extends AbstractLeafTask {
     public List<ParameterDesc<?>> getParameterDefinitions() {
         // TODO implement..
         return null;
+    }
+
+    @Override
+    public TaskDefinition<?> getDefinition() {
+        return DEFINITION;
     }
 }

@@ -27,9 +27,9 @@
             <Label text="%key.taskListLabel" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0" />
             <TreeView fx:id="taskList" prefHeight="317.0" prefWidth="238.0" AnchorPane.bottomAnchor="13.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="28.0">
               <contextMenu>
-                <ContextMenu>
+                <ContextMenu consumeAutoHidingEvents="false">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="%key.addTask" fx:id="addChildTask">
+                    <MenuItem mnemonicParsing="false" onAction="#addTaskClick" text="%key.addTask" fx:id="addTaskMenuItem">
                       <graphic>
                         <ImageView>
                           <image>
@@ -38,7 +38,7 @@
                         </ImageView>
                       </graphic>
                     </MenuItem>
-                    <MenuItem mnemonicParsing="false" text="%key.deleteTask" fx:id="deleteTask">
+                    <MenuItem mnemonicParsing="false" onAction="#deleteTaskClick" text="%key.deleteTask" fx:id="deleteTaskMenuItem">
                       <graphic>
                         <ImageView>
                           <image>
@@ -63,20 +63,12 @@
                       <children>
                         <Label layoutX="14.0" layoutY="8.0" text="%key.taskDescriptionLabel">
                           <labelFor>
-                            <TextField fx:id="taskDescriptionTextField" layoutY="5.0" prefWidth="164.00009999999747" AnchorPane.leftAnchor="134.0" AnchorPane.rightAnchor="11.0" />
+                            <TextField fx:id="taskDescriptionTextField" disable="true" editable="true" layoutY="5.0" prefWidth="164.00009999999747" AnchorPane.leftAnchor="134.0" AnchorPane.rightAnchor="11.0" />
                           </labelFor>
                         </Label>
                         <Label layoutX="14.0" layoutY="31.0" text="%key.taskTypeLabel">
                           <labelFor>
-                            <ComboBox fx:id="taskTypeComboBox" layoutY="28.0" prefWidth="164.0" AnchorPane.leftAnchor="135.0" AnchorPane.rightAnchor="11.0">
-                              <items>
-                                <FXCollections fx:factory="observableArrayList">
-                                  <String fx:value="Item 1" />
-                                  <String fx:value="Item 2" />
-                                  <String fx:value="Item 3" />
-                                </FXCollections>
-                              </items>
-                            </ComboBox>
+                            <ComboBox fx:id="taskTypeComboBox" disable="true" layoutY="28.0" prefWidth="164.0" promptText="%key.chooseTaskType" AnchorPane.leftAnchor="135.0" AnchorPane.rightAnchor="11.0" />
                           </labelFor>
                         </Label>
                         <fx:reference source="taskTypeComboBox" />

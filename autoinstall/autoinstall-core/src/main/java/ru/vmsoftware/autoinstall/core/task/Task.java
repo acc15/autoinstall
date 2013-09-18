@@ -13,6 +13,18 @@ import java.util.List;
 public interface Task {
 
     /**
+     * Returns whether this task is active or not
+     * @return {@code true} if this task is active and should be executed
+     */
+    boolean isActive();
+
+    /**
+     * Activates or deactivates current task
+     * @param value activation status: {@code true} to active, {@code false} inactive
+     */
+    void setActive(boolean value);
+
+    /**
      * Returns custom description of this task
      * @return description of this task
      */
@@ -60,4 +72,9 @@ public interface Task {
      */
     List<Parameter<?>> getParameters();
 
+    /**
+     * Returns current task definition
+     * @return task definition
+     */
+    TaskDefinition<?> getDefinition();
 }

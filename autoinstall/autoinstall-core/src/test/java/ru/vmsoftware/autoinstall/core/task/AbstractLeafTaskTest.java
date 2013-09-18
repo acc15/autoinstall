@@ -15,6 +15,11 @@ public class AbstractLeafTaskTest {
         @Override
         public void execute(ExecutionContext context) throws TaskException {
         }
+
+        @Override
+        public TaskDefinition<?> getDefinition() {
+            return null;
+        }
     }
 
     @Test

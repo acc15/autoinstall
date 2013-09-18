@@ -24,8 +24,12 @@ public class AbstractTaskTest {
         public List<Task> getChildren() {
             return null;
         }
-    }
 
+        @Override
+        public TaskDefinition<?> getDefinition() {
+            return null;
+        }
+    }
 
     @Test
     public void testDescriptionMethodsWorksCorrectly() throws Exception {
@@ -63,5 +67,18 @@ public class AbstractTaskTest {
     public void testGetParameterDefinitionsReturnsUnmodifiableList() throws Exception {
         final TestTask testTask = new TestTask();
         testTask.getParameterDefinitions().add(new ParameterDesc<>("test", TestTask.class));
+    }
+
+    @Test
+    public void testTaskIsActiveByDefault() throws Exception {
+        final TestTask testTask = new TestTask();
+        assertThat(testTask.isActive()).isTrue();
+    }
+
+    @Test
+    public void testSetActiveModifiesActiveStatus() throws Exception {
+        final TestTask testTask = new TestTask();
+        testTask.setActive(false);
+        assertThat(testTask.isActive()).isFalse();
     }
 }
