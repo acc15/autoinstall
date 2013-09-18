@@ -212,6 +212,8 @@ public class AutoInstallController implements Initializable {
     @FXML
     public void deleteTaskClick() {
         final TreeItem<Task> selectedItem = taskList.getSelectionModel().getSelectedItem();
+        final int selectedIndex = taskList.getSelectionModel().getSelectedIndex();
+
         final TreeItem<Task> parentItem = selectedItem.getParent();
         final int itemPosition = parentItem.getChildren().indexOf(selectedItem);
         if (itemPosition < 0) {
@@ -227,7 +229,7 @@ public class AutoInstallController implements Initializable {
             parentItem.getChildren().add(++insertionPos, child);
         }
         parentItem.getChildren().remove(itemPosition);
-        taskList.getSelectionModel().select(parentItem);
+        taskList.getSelectionModel().select(selectedIndex - (itemPosition + 1));
     }
 
     @FXML
