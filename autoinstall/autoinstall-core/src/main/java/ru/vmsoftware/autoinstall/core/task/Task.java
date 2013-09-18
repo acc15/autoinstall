@@ -1,5 +1,6 @@
 package ru.vmsoftware.autoinstall.core.task;
 
+import com.google.common.base.Preconditions;
 import ru.vmsoftware.autoinstall.core.ExecutionContext;
 import ru.vmsoftware.autoinstall.core.actions.Action;
 import ru.vmsoftware.autoinstall.core.actions.NullAction;
@@ -16,17 +17,9 @@ public class Task {
 
     private boolean active = true;
     private String description = "";
-    private List<Task> children;
+    private List<Task> children = new ArrayList<>();
     private List<Parameter<?>> parameters = new ArrayList<>();
     private Action action = NullAction.getInstance();
-
-    public Task() {
-        this(new ArrayList<Task>());
-    }
-
-    public Task(List<Task> children) {
-        this.children = children;
-    }
 
     /**
      * Returns whether this task is active or not
@@ -57,9 +50,7 @@ public class Task {
      * @param action new action for task
      */
     public void setAction(Action action) {
-        if (action == null) {
-            throw new NullPointerException("task action can't be null");
-        }
+        Preconditions.checkNotNull(action, "task action can't be null");
         this.action = action;
     }
 
@@ -76,9 +67,7 @@ public class Task {
      * @param description new description for this task
      */
     public void setDescription(String description) {
-        if (description == null) {
-            throw new NullPointerException("task description can't be null");
-        }
+        Preconditions.checkNotNull(description, "task description can't be null");
         this.description = description;
     }
 

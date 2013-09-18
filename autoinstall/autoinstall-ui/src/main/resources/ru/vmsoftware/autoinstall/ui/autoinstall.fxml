@@ -12,7 +12,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" opacity="1.0" prefHeight="300.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="ru.vmsoftware.autoinstall.ui.AutoInstallController">
+<AnchorPane id="AnchorPane" maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" opacity="1.0" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="ru.vmsoftware.autoinstall.ui.AutoInstallController">
   <children>
     <Label fx:id="titleLabel" prefHeight="14.0" text="%key.title" textAlignment="LEFT" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="16.0">
       <labelFor>
@@ -65,11 +65,11 @@
         </AnchorPane>
         <ScrollPane id="taskProperties" fitToHeight="true" fitToWidth="true" hbarPolicy="AS_NEEDED" minWidth="200.0" prefViewportHeight="236.0" prefViewportWidth="306.0">
           <content>
-            <VBox alignment="TOP_LEFT" disable="false" fillWidth="true" focusTraversable="false" minWidth="-1.0" prefWidth="-1.0" snapToPixel="true" spacing="0.0">
+            <VBox alignment="BOTTOM_LEFT" disable="false" fillWidth="true" focusTraversable="false" minWidth="-1.0" prefWidth="-1.0" snapToPixel="true" spacing="0.0">
               <children>
-                <TitledPane fx:id="x1" animated="false" expanded="true" minWidth="303.0" prefWidth="312.0" text="%key.commonPane">
+                <TitledPane fx:id="x1" animated="false" expanded="true" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" text="%key.commonPane">
                   <content>
-                    <AnchorPane id="AnchorPane" prefHeight="55.0" prefWidth="309.0">
+                    <AnchorPane id="" minHeight="-1.0" prefHeight="55.0" prefWidth="309.0">
                       <children>
                         <Label layoutX="14.0" layoutY="8.0" text="%key.taskDescriptionLabel">
                           <labelFor>
@@ -87,23 +87,23 @@
                     </AnchorPane>
                   </content>
                 </TitledPane>
-                <TitledPane animated="false" expanded="true" prefWidth="312.0" text="%key.conditionsPane">
+                <TitledPane animated="false" expanded="true" maxHeight="1.7976931348623157E308" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" text="%key.conditionsPane">
                   <content>
-                    <AnchorPane prefHeight="88.0" prefWidth="349.0">
+                    <AnchorPane minHeight="-1.0" prefHeight="120.0" prefWidth="-1.0">
                       <children>
-                        <Label layoutX="14.0" layoutY="7.0" prefWidth="111.0" text="%key.conditionsLabel">
+                        <Label layoutX="14.0" layoutY="13.0" prefWidth="111.0" text="%key.conditionsLabel">
                           <labelFor>
-                            <TextArea fx:id="conditionsTextArea" layoutY="7.0" prefHeight="69.0" prefWidth="216.0" promptText="%key.conditionsPrompt" wrapText="true" AnchorPane.leftAnchor="133.0" AnchorPane.rightAnchor="12.0" />
+                            <TextArea id="conditionsTextArea" fx:id="taskConditionsTextArea" prefHeight="-1.0" prefWidth="150.0" promptText="%key.conditionsPrompt" wrapText="true" AnchorPane.bottomAnchor="13.0" AnchorPane.leftAnchor="133.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="7.0" />
                           </labelFor>
                         </Label>
-                        <fx:reference source="conditionsTextArea" />
+                        <fx:reference source="taskConditionsTextArea" />
                       </children>
                     </AnchorPane>
                   </content>
                 </TitledPane>
-                <TitledPane fx:id="x2" animated="false" expanded="false" prefWidth="312.0" text="%key.parametersPane">
+                <TitledPane fx:id="x2" animated="false" collapsible="true" expanded="true" maxHeight="1.7976931348623157E308" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" text="%key.parametersPane" VBox.vgrow="SOMETIMES">
                   <content>
-                    <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="35.0" prefWidth="302.0" />
+                    <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" />
                   </content>
                 </TitledPane>
               </children>
