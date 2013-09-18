@@ -12,7 +12,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" opacity="1.0" prefHeight="300.0" prefWidth="500.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="ru.vmsoftware.autoinstall.ui.AutoInstallController">
+<AnchorPane id="AnchorPane" maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" opacity="1.0" prefHeight="300.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="ru.vmsoftware.autoinstall.ui.AutoInstallController">
   <children>
     <Label fx:id="titleLabel" prefHeight="14.0" text="%key.title" textAlignment="LEFT" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="16.0">
       <labelFor>
@@ -20,7 +20,7 @@
       </labelFor>
     </Label>
     <fx:reference source="installButton" />
-    <SplitPane dividerPositions="0.3893617021276596" focusTraversable="true" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="48.0">
+    <SplitPane dividerPositions="0.35789473684210527" focusTraversable="true" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="48.0">
       <items>
         <AnchorPane id="AnchorPane" minWidth="180.0" prefHeight="236.0" prefWidth="144.0">
           <children>
@@ -51,12 +51,12 @@
                 </ContextMenu>
               </contextMenu>
             </TreeView>
-            <ImageView fx:id="deleteTaskIcon" fitHeight="15.499998476598133" fitWidth="20.666664123535156" layoutX="151.0" layoutY="6.0" onMouseClicked="#deleteTaskClick" pickOnBounds="true" preserveRatio="true" styleClass="taskControlButton">
+            <ImageView fx:id="deleteTaskIcon" fitHeight="15.499998476598133" fitWidth="20.666664123535156" layoutY="7.0" onMouseClicked="#deleteTaskClick" pickOnBounds="true" preserveRatio="true" styleClass="taskControlButton" AnchorPane.rightAnchor="13.5">
               <image>
                 <Image url="@autoinstall-delete.png" />
               </image>
             </ImageView>
-            <ImageView fx:id="addTaskIcon" disable="false" fitHeight="15.499998476598133" fitWidth="20.666664123535156" layoutX="129.0" layoutY="7.0" onMouseClicked="#addTaskClick" pickOnBounds="true" preserveRatio="true" styleClass="taskControlButton">
+            <ImageView fx:id="addTaskIcon" disable="false" fitHeight="15.499998476598133" fitWidth="20.666664123535156" layoutY="7.0" onMouseClicked="#addTaskClick" pickOnBounds="true" preserveRatio="true" styleClass="taskControlButton" AnchorPane.rightAnchor="33.0">
               <image>
                 <Image url="@autoinstall-add.png" />
               </image>
@@ -73,12 +73,12 @@
                       <children>
                         <Label layoutX="14.0" layoutY="8.0" text="%key.taskDescriptionLabel">
                           <labelFor>
-                            <TextField fx:id="taskDescriptionTextField" disable="true" editable="true" layoutY="5.0" prefWidth="164.00009999999747" AnchorPane.leftAnchor="134.0" AnchorPane.rightAnchor="11.0" />
+                            <TextField fx:id="taskDescriptionTextField" disable="false" editable="true" layoutY="5.0" prefWidth="164.00009999999747" promptText="" AnchorPane.leftAnchor="134.0" AnchorPane.rightAnchor="11.0" />
                           </labelFor>
                         </Label>
                         <Label layoutX="14.0" layoutY="31.0" text="%key.taskActionLabel">
                           <labelFor>
-                            <ComboBox id="taskTypeComboBox" fx:id="taskActionComboBox" disable="true" layoutY="28.0" prefWidth="164.0" promptText="" AnchorPane.leftAnchor="135.0" AnchorPane.rightAnchor="11.0" />
+                            <ComboBox id="taskTypeComboBox" fx:id="taskActionComboBox" disable="false" layoutY="28.0" prefWidth="164.0" promptText="" AnchorPane.leftAnchor="135.0" AnchorPane.rightAnchor="11.0" />
                           </labelFor>
                         </Label>
                         <fx:reference source="taskActionComboBox" />
@@ -87,9 +87,18 @@
                     </AnchorPane>
                   </content>
                 </TitledPane>
-                <TitledPane animated="false" expanded="false" prefWidth="312.0" text="%key.conditionsPane">
+                <TitledPane animated="false" expanded="true" prefWidth="312.0" text="%key.conditionsPane">
                   <content>
-                    <AnchorPane id="Content" minHeight="0.0" minWidth="0.0" prefHeight="57.0" prefWidth="302.0" />
+                    <AnchorPane prefHeight="88.0" prefWidth="349.0">
+                      <children>
+                        <Label layoutX="14.0" layoutY="7.0" prefWidth="111.0" text="%key.conditionsLabel">
+                          <labelFor>
+                            <TextArea fx:id="conditionsTextArea" layoutY="7.0" prefHeight="69.0" prefWidth="216.0" promptText="%key.conditionsPrompt" wrapText="true" AnchorPane.leftAnchor="133.0" AnchorPane.rightAnchor="12.0" />
+                          </labelFor>
+                        </Label>
+                        <fx:reference source="conditionsTextArea" />
+                      </children>
+                    </AnchorPane>
                   </content>
                 </TitledPane>
                 <TitledPane fx:id="x2" animated="false" expanded="false" prefWidth="312.0" text="%key.parametersPane">
