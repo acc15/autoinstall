@@ -4,10 +4,10 @@ package ru.vmsoftware.autoinstall.core.params;
  * @author Vyacheslav Mayorov
  * @since 2013-17-09
  */
-public class Parameter<T> {
+public class Parameter {
 
     private String name;
-    private T value;
+    private String value;
 
     public Parameter() {
     }
@@ -16,9 +16,9 @@ public class Parameter<T> {
         this.name = name;
     }
 
-    public Parameter(String name, T value) {
-        this.value = value;
+    public Parameter(String name, String value) {
         this.name = name;
+        this.value = value;
     }
 
     public String getName() {
@@ -29,11 +29,11 @@ public class Parameter<T> {
         this.name = name;
     }
 
-    public T getValue() {
+    public String getValue() {
         return value;
     }
 
-    public void setValue(T value) {
+    public void setValue(String value) {
         this.value = value;
     }
 }

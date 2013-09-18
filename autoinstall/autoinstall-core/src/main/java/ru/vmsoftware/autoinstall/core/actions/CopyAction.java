@@ -14,18 +14,6 @@ import java.util.List;
  */
 public class CopyAction implements Action {
 
-    public static final ActionDefinition<CopyAction> DEFINITION = new ActionDefinition<CopyAction>() {
-        @Override
-        public String getName() {
-            return "copy";
-        }
-
-        @Override
-        public CopyAction getAction() {
-            return new CopyAction();
-        }
-    };
-
     private static final ParameterDesc<File> SOURCE_PATH = new ParameterDesc<>("sourcePath", File.class);
     private static final ParameterDesc<String> TARGET_PATH = new ParameterDesc<>("targetPath", String.class);
     private static final ParameterDesc<CopyMode> COPY_MODE = new ParameterDesc<>(
@@ -66,9 +54,4 @@ public class CopyAction implements Action {
         return Arrays.<ParameterDesc<?>>asList(SOURCE_PATH, TARGET_PATH, COPY_MODE);
     }
 
-
-    @Override
-    public ActionDefinition<?> getDefinition() {
-        return DEFINITION;
-    }
 }

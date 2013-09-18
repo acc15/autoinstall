@@ -2,8 +2,7 @@ package ru.vmsoftware.autoinstall.core.task;
 
 import com.google.common.base.Preconditions;
 import ru.vmsoftware.autoinstall.core.ExecutionContext;
-import ru.vmsoftware.autoinstall.core.actions.Action;
-import ru.vmsoftware.autoinstall.core.actions.NullAction;
+import ru.vmsoftware.autoinstall.core.actions.ActionType;
 import ru.vmsoftware.autoinstall.core.params.Parameter;
 
 import java.util.ArrayList;
@@ -17,9 +16,18 @@ public class Task {
 
     private boolean active = true;
     private String description = "";
-    private List<Task> children = new ArrayList<>();
-    private List<Parameter<?>> parameters = new ArrayList<>();
-    private Action action = NullAction.getInstance();
+    private String conditions = "";
+    private List<Parameter> parameters = new ArrayList<>();
+    private ActionType actionType = ActionType.NULL;
+    private List<Task> children;
+
+    public Task() {
+        this(new ArrayList<Task>());
+    }
+
+    public Task(List<Task> children) {
+        this.children = children;
+    }
 
     /**
      * Returns whether this task is active or not
@@ -38,20 +46,20 @@ public class Task {
     }
 
     /**
-     * Returns action for this task
+     * Returns action definition for this task
      * @return action for task or {@code null} if this is composite task
      */
-    public Action getAction() {
-        return action;
+    public ActionType getActionType() {
+        return actionType;
     }
 
     /**
-     * Sets action for this task
-     * @param action new action for task
+     * Sets action definition for this task
+     * @param actionType new action for task
      */
-    public void setAction(Action action) {
-        Preconditions.checkNotNull(action, "task action can't be null");
-        this.action = action;
+    public void setActionType(ActionType actionType) {
+        Preconditions.checkNotNull(actionType, "task action can't be null");
+        this.actionType = actionType;
     }
 
     /**
@@ -91,7 +99,7 @@ public class Task {
 
         // TODO check for conditions
 
-        action.execute(newContext);
+        actionType.getAction().execute(newContext);
         for (final Task child: children) {
             child.execute(newContext);
             if (context.isCancelled()) {
@@ -114,9 +122,24 @@ public class Task {
      * interface for adding, removing and modifying task parameters.
      * @return modifiable list of parameters.
      */
-    public List<Parameter<?>> getParameters() {
+    public List<Parameter> getParameters() {
         return parameters;
     }
 
+    /**
+     * Returns conditions expression
+     * @return conditions expression
+     */
+    public String getConditions() {
+        return conditions;
+    }
 
+    /**
+     * Sets conditions expression
+     * @param conditions conditions expression
+     */
+    public void setConditions(String conditions) {
+        Preconditions.checkNotNull(conditions, "task conditions can't be null");
+        this.conditions = conditions;
+    }
 }

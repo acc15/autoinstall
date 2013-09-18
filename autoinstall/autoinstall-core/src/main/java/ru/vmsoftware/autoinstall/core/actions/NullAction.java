@@ -13,18 +13,6 @@ import java.util.List;
  */
 public class NullAction implements Action {
 
-    public static final ActionDefinition<NullAction> DEFINITION = new ActionDefinition<NullAction>() {
-        @Override
-        public String getName() {
-            return "null";
-        }
-
-        @Override
-        public NullAction getAction() {
-            return getInstance();
-        }
-    };
-
     public static NullAction getInstance() {
         return instance;
     }
@@ -43,8 +31,4 @@ public class NullAction implements Action {
         return Collections.emptyList();
     }
 
-    @Override
-    public ActionDefinition<?> getDefinition() {
-        return DEFINITION;
-    }
 }

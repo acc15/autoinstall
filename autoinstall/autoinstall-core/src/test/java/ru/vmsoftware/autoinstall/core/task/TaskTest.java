@@ -1,8 +1,7 @@
 package ru.vmsoftware.autoinstall.core.task;
 
 import org.junit.Test;
-import ru.vmsoftware.autoinstall.core.actions.CopyAction;
-import ru.vmsoftware.autoinstall.core.actions.NullAction;
+import ru.vmsoftware.autoinstall.core.actions.ActionType;
 import ru.vmsoftware.autoinstall.core.params.Parameter;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -31,7 +30,7 @@ public class TaskTest {
     @Test
     public void testGetParametersReturnsModifiableList() throws Exception {
         final Task testTask = new Task();
-        final Parameter<String> expectedParameter = new Parameter<>("test", "abc");
+        final Parameter expectedParameter = new Parameter("test", "abc");
         testTask.getParameters().add(expectedParameter);
         assertThat(testTask.getParameters()).containsExactly(expectedParameter);
 
@@ -61,22 +60,39 @@ public class TaskTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void testActionCantBeNull() throws Exception {
+    public void testActionDefinitionCantBeNull() throws Exception {
         final Task task = new Task();
-        task.setAction(null);
+        task.setActionType(null);
     }
 
     @Test
     public void testTaskHasNullActionByDefault() throws Exception {
-        final Task task = new Task();
-        assertThat(task.getAction()).isInstanceOf(NullAction.class);
+        assertThat(new Task().getActionType()).isSameAs(ActionType.NULL);
     }
 
     @Test
-    public void testActionCanBeModified() throws Exception {
+    public void testActionDefinitionCanBeModified() throws Exception {
         final Task task = new Task();
-        final CopyAction expectedAction = new CopyAction();
-        task.setAction(expectedAction);
-        assertThat(task.getAction()).isSameAs(expectedAction);
+        final ActionType expectedDef = ActionType.COPY;
+        task.setActionType(expectedDef);
+        assertThat(task.getActionType()).isSameAs(expectedDef);
+    }
+
+    @Test
+    public void testConditionsIsEmptyByDefault() throws Exception {
+        assertThat(new Task().getConditions()).isEmpty();
+    }
+
+    @Test
+    public void testConditionsCanBeModified() throws Exception {
+        final Task task = new Task();
+        final String expectedConditions = "test condition";
+        task.setConditions(expectedConditions);
+        assertThat(task.getConditions()).isEqualTo(expectedConditions);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testConditionsCantBeNull() throws Exception {
+        new Task().setConditions(null);
     }
 }

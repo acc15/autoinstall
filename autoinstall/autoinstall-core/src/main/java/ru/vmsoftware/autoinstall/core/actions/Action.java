@@ -28,11 +28,4 @@ public interface Action {
      */
     List<ParameterDesc<?>> getParameterDefinitions();
 
-
-    /**
-     * Returns current task definition
-     * @return task definition
-     */
-    ActionDefinition<?> getDefinition();
-
 }

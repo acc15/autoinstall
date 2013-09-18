@@ -14,19 +14,6 @@ import java.util.List;
  */
 public class ExecuteAction implements Action {
 
-    public static final ActionDefinition<ExecuteAction> DEFINITION = new ActionDefinition<ExecuteAction>() {
-        @Override
-        public String getName() {
-            return "execute";
-        }
-
-        @Override
-        public ExecuteAction getAction() {
-            return new ExecuteAction();
-        }
-
-    };
-
     private static final ParameterDesc<File> EXECUTABLE = new ParameterDesc<>("executable", File.class);
     private static final ParameterDesc<ExecutionMode> EXECUTION_MODE = new ParameterDesc<>("executionMode",
             ExecutionMode.class, ExecutionMode.WAIT_FOR_FINISH);
@@ -45,11 +32,6 @@ public class ExecuteAction implements Action {
     @Override
     public List<ParameterDesc<?>> getParameterDefinitions() {
         return Arrays.<ParameterDesc<?>>asList(EXECUTABLE, EXECUTION_MODE);
-    }
-
-    @Override
-    public ActionDefinition<?> getDefinition() {
-        return DEFINITION;
     }
 
 }

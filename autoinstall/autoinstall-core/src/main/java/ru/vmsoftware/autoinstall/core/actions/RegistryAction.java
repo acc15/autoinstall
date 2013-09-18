@@ -12,18 +12,6 @@ import java.util.List;
  */
 public class RegistryAction implements Action {
 
-    public static final ActionDefinition<RegistryAction> DEFINITION = new ActionDefinition<RegistryAction>() {
-        @Override
-        public String getName() {
-            return "registry";
-        }
-
-        @Override
-        public RegistryAction getAction() {
-            return new RegistryAction();
-        }
-    };
-
     private static final ParameterDesc<String> REGISTRY_KEY = new ParameterDesc<>("registryKey", String.class);
 
     @Override
@@ -38,8 +26,4 @@ public class RegistryAction implements Action {
         return null;
     }
 
-    @Override
-    public ActionDefinition<?> getDefinition() {
-        return DEFINITION;
-    }
 }
