@@ -66,12 +66,12 @@
                             <TextField fx:id="taskDescriptionTextField" disable="true" editable="true" layoutY="5.0" prefWidth="164.00009999999747" AnchorPane.leftAnchor="134.0" AnchorPane.rightAnchor="11.0" />
                           </labelFor>
                         </Label>
-                        <Label layoutX="14.0" layoutY="31.0" text="%key.taskTypeLabel">
+                        <Label layoutX="14.0" layoutY="31.0" text="%key.taskActionLabel">
                           <labelFor>
-                            <ComboBox fx:id="taskTypeComboBox" disable="true" layoutY="28.0" prefWidth="164.0" promptText="%key.chooseTaskType" AnchorPane.leftAnchor="135.0" AnchorPane.rightAnchor="11.0" />
+                            <ComboBox id="taskTypeComboBox" fx:id="taskActionComboBox" disable="true" layoutY="28.0" prefWidth="164.0" promptText="" AnchorPane.leftAnchor="135.0" AnchorPane.rightAnchor="11.0" />
                           </labelFor>
                         </Label>
-                        <fx:reference source="taskTypeComboBox" />
+                        <fx:reference source="taskActionComboBox" />
                         <fx:reference source="taskDescriptionTextField" />
                       </children>
                     </AnchorPane>

@@ -16,9 +16,17 @@ public class Task {
 
     private boolean active = true;
     private String description = "";
-    private List<Task> children = new ArrayList<>();
+    private List<Task> children;
     private List<Parameter<?>> parameters = new ArrayList<>();
     private Action action = NullAction.getInstance();
+
+    public Task() {
+        this(new ArrayList<Task>());
+    }
+
+    public Task(List<Task> children) {
+        this.children = children;
+    }
 
     /**
      * Returns whether this task is active or not

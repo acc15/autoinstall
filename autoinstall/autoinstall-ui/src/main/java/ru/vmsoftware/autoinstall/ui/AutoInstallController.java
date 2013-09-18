@@ -17,9 +17,7 @@ import ru.vmsoftware.autoinstall.core.action.NullAction;
 import ru.vmsoftware.autoinstall.core.task.Task;
 
 import java.net.URL;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.WeakHashMap;
+import java.util.*;
 
 /**
  * @author Vyacheslav Mayorov
@@ -31,7 +29,7 @@ public class AutoInstallController implements Initializable {
     private TreeView<Task> taskList;
 
     @FXML
-    private ComboBox<ActionDefinition<?>> taskTypeComboBox;
+    private ComboBox<ActionDefinition<?>> taskActionComboBox;
 
     @FXML
     private TextField taskDescriptionTextField;
@@ -62,10 +60,23 @@ public class AutoInstallController implements Initializable {
     }
 
     private CheckBoxTreeItem<Task> createTaskItem(String initialDescriptionKey) {
-        final Task task = new Task();
-        task.setDescription(resourceBundle.getString(initialDescriptionKey));
 
-        final CheckBoxTreeItem<Task> item = new CheckBoxTreeItem<>(task, getIconForTask(task));
+        final CheckBoxTreeItem<Task> item = new CheckBoxTreeItem<>();
+        final Task task = new Task(new AbstractList<Task>() {
+            @Override
+            public Task get(int index) {
+                return item.getChildren().get(index).getValue();
+            }
+
+            @Override
+            public int size() {
+                return item.getChildren().size();
+            }
+        });
+        task.setDescription(resourceBundle.getString(initialDescriptionKey));
+        item.setValue(task);
+
+        item.setGraphic(getIconForTask(task));
         item.setIndependent(true);
         item.setSelected(task.isActive());
         item.selectedProperty().addListener(new ChangeListener<Boolean>() {
@@ -120,8 +131,8 @@ public class AutoInstallController implements Initializable {
                 if (newItem == null) {
                     taskDescriptionTextField.setDisable(true);
                     taskDescriptionTextField.setText(null);
-                    taskTypeComboBox.setDisable(true);
-                    taskTypeComboBox.setValue(null);
+                    taskActionComboBox.setDisable(true);
+                    taskActionComboBox.setValue(null);
                     return;
                 }
 
@@ -129,15 +140,15 @@ public class AutoInstallController implements Initializable {
 
                 final Task task = newItem.getValue();
                 taskDescriptionTextField.setText(task.getDescription());
-                taskTypeComboBox.setDisable(!newItem.getChildren().isEmpty());
-                taskTypeComboBox.setValue(task.getAction().getDefinition());
+                taskActionComboBox.setDisable(!newItem.getChildren().isEmpty());
+                taskActionComboBox.setValue(task.getAction().getDefinition());
             }
         });
 
         taskList.setRoot(createTaskItem("task.rootInitialDescription"));
 
-        taskTypeComboBox.setItems(new ObservableListWrapper<>(getActionRegistry().getAvailableActions()));
-        taskTypeComboBox.setConverter(new StringConverter<ActionDefinition<?>>() {
+        taskActionComboBox.setItems(new ObservableListWrapper<>(getActionRegistry().getAvailableActions()));
+        taskActionComboBox.setConverter(new StringConverter<ActionDefinition<?>>() {
             @Override
             public String toString(ActionDefinition<?> definition) {
                 return resourceBundle.getString(definition != null
@@ -150,7 +161,7 @@ public class AutoInstallController implements Initializable {
                 return null;
             }
         });
-        taskTypeComboBox.valueProperty().addListener(new ChangeListener<ActionDefinition<?>>() {
+        taskActionComboBox.valueProperty().addListener(new ChangeListener<ActionDefinition<?>>() {
             @Override
             public void changed(ObservableValue<? extends ActionDefinition<?>> observableValue,
                                 ActionDefinition<?> oldDefinition,
@@ -201,8 +212,22 @@ public class AutoInstallController implements Initializable {
     @FXML
     public void deleteTaskClick() {
         final TreeItem<Task> selectedItem = taskList.getSelectionModel().getSelectedItem();
+        final TreeItem<Task> parentItem = selectedItem.getParent();
+        final int itemPosition = parentItem.getChildren().indexOf(selectedItem);
+        if (itemPosition < 0) {
+            throw new IllegalArgumentException("can't find selectedItem in parentItem");
+        }
 
+        int insertionPos = itemPosition;
 
+        final Iterator<TreeItem<Task>> iter = selectedItem.getChildren().iterator();
+        while (iter.hasNext()) {
+            final TreeItem<Task> child = iter.next();
+            iter.remove();
+            parentItem.getChildren().add(++insertionPos, child);
+        }
+        parentItem.getChildren().remove(itemPosition);
+        taskList.getSelectionModel().select(parentItem);
     }
 
     @FXML
