@@ -27,6 +27,8 @@ import java.util.*;
  */
 public class AutoInstallController implements Initializable {
 
+    private static final Effect DISABLED_EFFECT = new ColorAdjust(0, -1, 0, 0);
+
     @FXML
     private TreeView<Task> taskList;
 
@@ -101,14 +103,14 @@ public class AutoInstallController implements Initializable {
 
     private void updateTaskManagementItemsForSelectedTreeItem(TreeItem<Task> selectedItem) {
 
-        final Effect disabledEffect = new ColorAdjust(0, -1, 0, 0);
+
         if (selectedItem == null) {
             deleteTaskMenuItem.setDisable(true);
             addTaskMenuItem.setDisable(true);
             deleteTaskIcon.setDisable(true);
             addTaskIcon.setDisable(true);
-            addTaskIcon.setEffect(disabledEffect);
-            deleteTaskIcon.setEffect(disabledEffect);
+            addTaskIcon.setEffect(DISABLED_EFFECT);
+            deleteTaskIcon.setEffect(DISABLED_EFFECT);
             return;
         }
 
@@ -116,10 +118,10 @@ public class AutoInstallController implements Initializable {
         final boolean disableDelete = selectedItem.getParent() == null;
 
         addTaskIcon.setDisable(disableAdd);
-        addTaskIcon.setEffect(disableAdd ? disabledEffect : null);
+        addTaskIcon.setEffect(disableAdd ? DISABLED_EFFECT : null);
 
         deleteTaskIcon.setDisable(disableDelete);
-        deleteTaskIcon.setEffect(disableDelete ? disabledEffect : null);
+        deleteTaskIcon.setEffect(disableDelete ? DISABLED_EFFECT : null);
 
         addTaskMenuItem.setDisable(disableAdd);
         deleteTaskMenuItem.setDisable(disableDelete);
