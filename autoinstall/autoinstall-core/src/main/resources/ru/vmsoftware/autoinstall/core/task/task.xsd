@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:t="http://vmsoftware.ru/autoinstall/task" targetNamespace="http://vmsoftware.ru/autoinstall/task" elementFormDefault="qualified">
+	<xsd:element name="task">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="description" type="xsd:string" minOccurs="0"/>
+				<xsd:element name="conditions" type="xsd:string" minOccurs="0"/>
+				<xsd:element name="parameter" minOccurs="0" maxOccurs="unbounded">
+					<xsd:complexType>
+						<xsd:simpleContent>
+							<xsd:extension base="xsd:string">
+                                <xsd:attribute name="name" type="xsd:string"/>
+                            </xsd:extension>
+						</xsd:simpleContent>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element ref="t:task" minOccurs="0" maxOccurs="unbounded"/>
+			</xsd:sequence>
+			<xsd:attribute name="active" type="xsd:boolean" use="optional" default="true"/>
+			<xsd:attribute name="type" use="optional" default="null">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="null"/>
+						<xsd:enumeration value="copy"/>
+						<xsd:enumeration value="execute"/>
+						<xsd:enumeration value="registry"/>
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+</xsd:schema>
