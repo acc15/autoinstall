@@ -7,6 +7,7 @@
 <?import javafx.collections.*?>
 <?import javafx.collections.FXCollections?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -24,7 +25,7 @@
       <items>
         <AnchorPane id="AnchorPane" minWidth="180.0" prefHeight="236.0" prefWidth="144.0">
           <children>
-            <Label text="%key.taskListLabel" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="11.0" />
+            <Label text="%key.taskListLabel" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="7.0" />
             <TreeView fx:id="taskList" prefHeight="317.0" prefWidth="238.0" AnchorPane.bottomAnchor="13.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="28.0">
               <contextMenu>
                 <ContextMenu consumeAutoHidingEvents="false">
@@ -51,12 +52,15 @@
                 </ContextMenu>
               </contextMenu>
             </TreeView>
-            <ImageView fx:id="deleteTaskIcon" fitHeight="15.499998476598133" fitWidth="20.666664123535156" layoutX="151.0" layoutY="10.0" onMouseClicked="#deleteTaskClick" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="deleteTaskIcon" fitHeight="15.499998476598133" fitWidth="20.666664123535156" layoutX="151.0" layoutY="6.0" onMouseClicked="#deleteTaskClick" pickOnBounds="true" preserveRatio="true">
               <image>
                 <Image url="@autoinstall-delete.png" />
               </image>
             </ImageView>
-            <ImageView fx:id="addTaskIcon" disable="false" fitHeight="15.499998476598133" fitWidth="20.666664123535156" layoutX="129.0" layoutY="10.0" onMouseClicked="#addTaskClick" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="addTaskIcon" disable="false" fitHeight="15.499998476598133" fitWidth="20.666664123535156" layoutX="129.0" layoutY="7.0" onMouseClicked="#addTaskClick" pickOnBounds="true" preserveRatio="true">
+              <effect>
+                <ColorAdjust />
+              </effect>
               <image>
                 <Image url="@autoinstall-add.png" />
               </image>

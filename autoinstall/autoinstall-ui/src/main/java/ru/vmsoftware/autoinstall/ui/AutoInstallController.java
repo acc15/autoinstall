@@ -7,6 +7,8 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.effect.Effect;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.StringConverter;
@@ -98,11 +100,15 @@ public class AutoInstallController implements Initializable {
     }
 
     private void updateTaskManagementItemsForSelectedTreeItem(TreeItem<Task> selectedItem) {
+
+        final Effect disabledEffect = new ColorAdjust(0, -1, 0, 0);
         if (selectedItem == null) {
             deleteTaskMenuItem.setDisable(true);
             addTaskMenuItem.setDisable(true);
             deleteTaskIcon.setDisable(true);
             addTaskIcon.setDisable(true);
+            addTaskIcon.setEffect(disabledEffect);
+            deleteTaskIcon.setEffect(disabledEffect);
             return;
         }
 
@@ -110,7 +116,11 @@ public class AutoInstallController implements Initializable {
         final boolean disableDelete = selectedItem.getParent() == null;
 
         addTaskIcon.setDisable(disableAdd);
+        addTaskIcon.setEffect(disableAdd ? disabledEffect : null);
+
         deleteTaskIcon.setDisable(disableDelete);
+        deleteTaskIcon.setEffect(disableDelete ? disabledEffect : null);
+
         addTaskMenuItem.setDisable(disableAdd);
         deleteTaskMenuItem.setDisable(disableDelete);
     }
