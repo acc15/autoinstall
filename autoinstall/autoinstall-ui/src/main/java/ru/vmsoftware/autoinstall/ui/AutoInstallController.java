@@ -42,19 +42,19 @@ public class AutoInstallController implements Initializable {
 
     private ResourceBundle resourceBundle;
 
-    private Map<String,Image> cachedIcons = new WeakHashMap<>();
+    private Map<ActionDefinition<?>,Image> cachedIcons = new WeakHashMap<>();
 
     private static ActionRegistry getActionRegistry() {
         return DefaultActionRegistry.getInstance();
     }
 
     private ImageView getIconForTask(Task task) {
-        final String name = task.getAction().getDefinition().getName();
-        Image icon = cachedIcons.get(name);
+        final ActionDefinition<?> definition = task.getAction().getDefinition();
+        Image icon = cachedIcons.get(definition);
         if (icon == null) {
             icon = new Image(
-                    AutoInstallController.class.getResource(name + "-action.png").toExternalForm());
-            cachedIcons.put(name, icon);
+                    AutoInstallController.class.getResource(definition.getName() + "-action.png").toExternalForm());
+            cachedIcons.put(definition, icon);
         }
         return new ImageView(icon);
     }
