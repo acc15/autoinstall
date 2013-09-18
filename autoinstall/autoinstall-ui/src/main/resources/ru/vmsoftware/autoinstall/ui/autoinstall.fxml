@@ -20,11 +20,11 @@
       </labelFor>
     </Label>
     <fx:reference source="installButton" />
-    <SplitPane dividerPositions="0.3127659574468085" focusTraversable="true" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="48.0">
+    <SplitPane dividerPositions="0.3893617021276596" focusTraversable="true" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="48.0">
       <items>
-        <AnchorPane id="AnchorPane" minWidth="144.0" prefHeight="236.0" prefWidth="144.0">
+        <AnchorPane id="AnchorPane" minWidth="180.0" prefHeight="236.0" prefWidth="144.0">
           <children>
-            <Label text="%key.taskListLabel" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0" />
+            <Label text="%key.taskListLabel" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="11.0" />
             <TreeView fx:id="taskList" prefHeight="317.0" prefWidth="238.0" AnchorPane.bottomAnchor="13.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="28.0">
               <contextMenu>
                 <ContextMenu consumeAutoHidingEvents="false">
@@ -51,6 +51,16 @@
                 </ContextMenu>
               </contextMenu>
             </TreeView>
+            <ImageView fx:id="deleteTaskIcon" fitHeight="15.499998476598133" fitWidth="20.666664123535156" layoutX="151.0" layoutY="10.0" onMouseClicked="#deleteTaskClick" pickOnBounds="true" preserveRatio="true">
+              <image>
+                <Image url="@autoinstall-delete.png" />
+              </image>
+            </ImageView>
+            <ImageView fx:id="addTaskIcon" disable="false" fitHeight="15.499998476598133" fitWidth="20.666664123535156" layoutX="129.0" layoutY="10.0" onMouseClicked="#addTaskClick" pickOnBounds="true" preserveRatio="true">
+              <image>
+                <Image url="@autoinstall-add.png" />
+              </image>
+            </ImageView>
           </children>
         </AnchorPane>
         <ScrollPane id="taskProperties" fitToHeight="true" fitToWidth="true" hbarPolicy="AS_NEEDED" minWidth="200.0" prefViewportHeight="236.0" prefViewportWidth="306.0">

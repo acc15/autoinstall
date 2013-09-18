@@ -1,8 +1,8 @@
 package ru.vmsoftware.autoinstall.core.task;
 
 import ru.vmsoftware.autoinstall.core.ExecutionContext;
-import ru.vmsoftware.autoinstall.core.action.Action;
-import ru.vmsoftware.autoinstall.core.action.NullAction;
+import ru.vmsoftware.autoinstall.core.actions.Action;
+import ru.vmsoftware.autoinstall.core.actions.NullAction;
 import ru.vmsoftware.autoinstall.core.params.Parameter;
 
 import java.util.ArrayList;

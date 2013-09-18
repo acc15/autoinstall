@@ -10,10 +10,10 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.StringConverter;
-import ru.vmsoftware.autoinstall.core.action.ActionDefinition;
-import ru.vmsoftware.autoinstall.core.action.ActionRegistry;
-import ru.vmsoftware.autoinstall.core.action.DefaultActionRegistry;
-import ru.vmsoftware.autoinstall.core.action.NullAction;
+import ru.vmsoftware.autoinstall.core.actions.ActionDefinition;
+import ru.vmsoftware.autoinstall.core.actions.ActionRegistry;
+import ru.vmsoftware.autoinstall.core.actions.DefaultActionRegistry;
+import ru.vmsoftware.autoinstall.core.actions.NullAction;
 import ru.vmsoftware.autoinstall.core.task.Task;
 
 import java.net.URL;
@@ -39,6 +39,13 @@ public class AutoInstallController implements Initializable {
 
     @FXML
     private MenuItem deleteTaskMenuItem;
+
+    @FXML
+    private ImageView addTaskIcon;
+
+    @FXML
+    private ImageView deleteTaskIcon;
+
 
     private ResourceBundle resourceBundle;
 
@@ -90,14 +97,41 @@ public class AutoInstallController implements Initializable {
         return item;
     }
 
-    private void updateMenuItemsForSelectedTreeItem(TreeItem<Task> selectedItem) {
+    private void updateTaskManagementItemsForSelectedTreeItem(TreeItem<Task> selectedItem) {
         if (selectedItem == null) {
             deleteTaskMenuItem.setDisable(true);
             addTaskMenuItem.setDisable(true);
+            deleteTaskIcon.setDisable(true);
+            addTaskIcon.setDisable(true);
             return;
         }
-        addTaskMenuItem.setDisable(selectedItem.getValue().getAction() != NullAction.getInstance());
-        deleteTaskMenuItem.setDisable(selectedItem.getParent() == null);
+
+        final boolean disableAdd = selectedItem.getValue().getAction() != NullAction.getInstance();
+        final boolean disableDelete = selectedItem.getParent() == null;
+
+        addTaskIcon.setDisable(disableAdd);
+        deleteTaskIcon.setDisable(disableDelete);
+        addTaskMenuItem.setDisable(disableAdd);
+        deleteTaskMenuItem.setDisable(disableDelete);
+    }
+
+    private void updateSceneForSelectedTreeItem(TreeItem<Task> selectedItem) {
+
+        updateTaskManagementItemsForSelectedTreeItem(selectedItem);
+        if (selectedItem == null) {
+            taskDescriptionTextField.setDisable(true);
+            taskDescriptionTextField.setText(null);
+            taskActionComboBox.setDisable(true);
+            taskActionComboBox.setValue(null);
+            return;
+        }
+
+        taskDescriptionTextField.setDisable(false);
+
+        final Task task = selectedItem.getValue();
+        taskDescriptionTextField.setText(task.getDescription());
+        taskActionComboBox.setDisable(!selectedItem.getChildren().isEmpty());
+        taskActionComboBox.setValue(task.getAction().getDefinition());
     }
 
     private static void fireChangeEvent(TreeItem<Task> selectedItem) {
@@ -127,21 +161,7 @@ public class AutoInstallController implements Initializable {
             public void changed(ObservableValue<? extends TreeItem<Task>> observableValue,
                                 TreeItem<Task> oldItem,
                                 TreeItem<Task> newItem) {
-                updateMenuItemsForSelectedTreeItem(newItem);
-                if (newItem == null) {
-                    taskDescriptionTextField.setDisable(true);
-                    taskDescriptionTextField.setText(null);
-                    taskActionComboBox.setDisable(true);
-                    taskActionComboBox.setValue(null);
-                    return;
-                }
-
-                taskDescriptionTextField.setDisable(false);
-
-                final Task task = newItem.getValue();
-                taskDescriptionTextField.setText(task.getDescription());
-                taskActionComboBox.setDisable(!newItem.getChildren().isEmpty());
-                taskActionComboBox.setValue(task.getAction().getDefinition());
+                updateSceneForSelectedTreeItem(newItem);
             }
         });
 
@@ -179,7 +199,8 @@ public class AutoInstallController implements Initializable {
 
                 item.getValue().setAction(newDefinition.getAction());
                 item.setGraphic(getIconForTask(item.getValue()));
-                updateMenuItemsForSelectedTreeItem(item);
+
+                updateTaskManagementItemsForSelectedTreeItem(item);
                 fireChangeEvent(item);
 
             }
@@ -198,6 +219,8 @@ public class AutoInstallController implements Initializable {
                 fireChangeEvent(selectedItem);
             }
         });
+
+        updateSceneForSelectedTreeItem(null);
 
     }
 

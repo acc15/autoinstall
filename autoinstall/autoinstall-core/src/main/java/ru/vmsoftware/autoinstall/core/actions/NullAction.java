@@ -1,4 +1,4 @@
-package ru.vmsoftware.autoinstall.core.action;
+package ru.vmsoftware.autoinstall.core.actions;
 
 import ru.vmsoftware.autoinstall.core.ExecutionContext;
 import ru.vmsoftware.autoinstall.core.params.ParameterDesc;

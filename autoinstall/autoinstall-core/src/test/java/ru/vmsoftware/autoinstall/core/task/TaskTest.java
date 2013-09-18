@@ -1,8 +1,8 @@
 package ru.vmsoftware.autoinstall.core.task;
 
 import org.junit.Test;
-import ru.vmsoftware.autoinstall.core.action.CopyAction;
-import ru.vmsoftware.autoinstall.core.action.NullAction;
+import ru.vmsoftware.autoinstall.core.actions.CopyAction;
+import ru.vmsoftware.autoinstall.core.actions.NullAction;
 import ru.vmsoftware.autoinstall.core.params.Parameter;
 
 import static org.fest.assertions.Assertions.assertThat;
