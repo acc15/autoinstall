@@ -10,3 +10,8 @@
 #taskProperties {
     -fx-background-color: lightgray;
 }
+
+.taskControlButton:pressed {
+    -fx-translate-x: 1;
+    -fx-translate-y: 1;
+}
