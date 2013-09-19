@@ -13,10 +13,13 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.StringConverter;
 import ru.vmsoftware.autoinstall.core.actions.ActionType;
-import ru.vmsoftware.autoinstall.core.task.Task;
+import ru.vmsoftware.autoinstall.ui.model.TaskViewModel;
 
 import java.net.URL;
-import java.util.*;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.WeakHashMap;
 
 /**
  * @author Vyacheslav Mayorov
@@ -27,7 +30,7 @@ public class AutoInstallController implements Initializable {
     private static final Effect DISABLED_EFFECT = new ColorAdjust(0, -1, 0, 0);
 
     @FXML
-    private TreeView<Task> taskList;
+    private TreeView<TaskViewModel> taskList;
 
     @FXML
     private ComboBox<ActionType> taskActionComboBox;
@@ -50,52 +53,33 @@ public class AutoInstallController implements Initializable {
     @FXML
     private ImageView deleteTaskIcon;
 
-
     private ResourceBundle resourceBundle;
 
     private Map<ActionType,Image> cachedIcons = new WeakHashMap<>();
 
-    private ImageView getIconForTask(Task task) {
-        final ActionType definition = task.getActionType();
-        Image icon = cachedIcons.get(definition);
+    private ImageView getIconByActionType(ActionType actionType) {
+        Image icon = cachedIcons.get(actionType);
         if (icon == null) {
             icon = new Image(
-                    AutoInstallController.class.getResource(definition.getName() + "-action.png").toExternalForm());
-            cachedIcons.put(definition, icon);
+                    AutoInstallController.class.getResource(actionType.getName() + "-action.png").toExternalForm());
+            cachedIcons.put(actionType, icon);
         }
         return new ImageView(icon);
     }
 
-    private CheckBoxTreeItem<Task> createTaskItem(String initialDescriptionKey) {
-        final CheckBoxTreeItem<Task> item = new CheckBoxTreeItem<>();
-        final Task task = new Task(new AbstractList<Task>() {
-            @Override
-            public Task get(int index) {
-                return item.getChildren().get(index).getValue();
-            }
-
-            @Override
-            public int size() {
-                return item.getChildren().size();
-            }
-        });
+    private CheckBoxTreeItem<TaskViewModel> createTaskItem(String initialDescriptionKey) {
+        final TaskViewModel task = new TaskViewModel();
+        final CheckBoxTreeItem<TaskViewModel> item = new CheckBoxTreeItem<>(task);
         task.setDescription(resourceBundle.getString(initialDescriptionKey));
-
-        item.setSelected(task.isActive());
-        item.selectedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observableValue,
-                                Boolean oldValue, Boolean newValue) {
-                task.setActive(newValue);
-            }
-        });
         item.setValue(task);
-        item.setGraphic(getIconForTask(task));
+        item.setSelected(true);
+        item.setExpanded(true);
         item.setIndependent(true);
+        item.setGraphic(getIconByActionType(task.getActionType()));
         return item;
     }
 
-    private void updateTaskManagementItemsForSelectedTreeItem(TreeItem<Task> selectedItem) {
+    private void updateTaskManagementItemsForSelectedTreeItem(TreeItem<TaskViewModel> selectedItem) {
 
         if (selectedItem == null) {
             deleteTaskMenuItem.setDisable(true);
@@ -120,7 +104,7 @@ public class AutoInstallController implements Initializable {
         deleteTaskMenuItem.setDisable(disableDelete);
     }
 
-    private void updateSceneForSelectedTreeItem(TreeItem<Task> selectedItem) {
+    private void updateSceneForSelectedTreeItem(TreeItem<TaskViewModel> selectedItem) {
 
         updateTaskManagementItemsForSelectedTreeItem(selectedItem);
 
@@ -134,7 +118,7 @@ public class AutoInstallController implements Initializable {
             return;
         }
 
-        final Task task = selectedItem.getValue();
+        final TaskViewModel task = selectedItem.getValue();
         taskDescriptionTextField.setDisable(false);
         taskDescriptionTextField.setText(task.getDescription());
         taskConditionsTextArea.setDisable(false);
@@ -144,7 +128,7 @@ public class AutoInstallController implements Initializable {
 
     }
 
-    private static void fireChangeEvent(TreeItem<Task> selectedItem) {
+    private static void fireChangeEvent(TreeItem<TaskViewModel> selectedItem) {
         Event.fireEvent(selectedItem, new TreeItem.TreeModificationEvent<>(
                 TreeItem.valueChangedEvent(), selectedItem, selectedItem.getValue()));
     }
@@ -155,22 +139,22 @@ public class AutoInstallController implements Initializable {
 
         this.resourceBundle = resourceBundle;
 
-        taskList.setCellFactory(new CheckedBoxTreeCellFactory<>(new StringConverter<TreeItem<Task>>() {
+        taskList.setCellFactory(new CheckedBoxTreeCellFactory<>(new StringConverter<TreeItem<TaskViewModel>>() {
             @Override
-            public String toString(TreeItem<Task> taskTreeItem) {
+            public String toString(TreeItem<TaskViewModel> taskTreeItem) {
                 return taskTreeItem.getValue().getDescription();
             }
 
             @Override
-            public TreeItem<Task> fromString(String s) {
+            public TreeItem<TaskViewModel> fromString(String s) {
                 return null;
             }
         }));
-        taskList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TreeItem<Task>>() {
+        taskList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TreeItem<TaskViewModel>>() {
             @Override
-            public void changed(ObservableValue<? extends TreeItem<Task>> observableValue,
-                                TreeItem<Task> oldItem,
-                                TreeItem<Task> newItem) {
+            public void changed(ObservableValue<? extends TreeItem<TaskViewModel>> observableValue,
+                                TreeItem<TaskViewModel> oldItem,
+                                TreeItem<TaskViewModel> newItem) {
                 updateSceneForSelectedTreeItem(newItem);
             }
         });
@@ -180,10 +164,8 @@ public class AutoInstallController implements Initializable {
         taskActionComboBox.setItems(new ObservableListWrapper<>(ActionType.getAvailableActions()));
         taskActionComboBox.setConverter(new StringConverter<ActionType>() {
             @Override
-            public String toString(ActionType definition) {
-                return resourceBundle.getString(definition != null
-                        ? "task." + definition.getName()
-                        : "key.chooseTaskType");
+            public String toString(ActionType actionType) {
+                return resourceBundle.getString("task." + actionType.getName());
             }
 
             @Override
@@ -196,7 +178,7 @@ public class AutoInstallController implements Initializable {
             public void changed(ObservableValue<? extends ActionType> observableValue,
                                 ActionType oldDefinition,
                                 ActionType newDefinition) {
-                final TreeItem<Task> item = taskList.getSelectionModel().getSelectedItem();
+                final TreeItem<TaskViewModel> item = taskList.getSelectionModel().getSelectedItem();
                 if (item == null && newDefinition != null) {
                     throw new IllegalStateException("no item is selected in TreeView but task type was modified");
                 } else if (item != null && newDefinition == null) {
@@ -208,7 +190,7 @@ public class AutoInstallController implements Initializable {
                 }
 
                 item.getValue().setActionType(newDefinition);
-                item.setGraphic(getIconForTask(item.getValue()));
+                item.setGraphic(getIconByActionType(item.getValue().getActionType()));
 
                 updateTaskManagementItemsForSelectedTreeItem(item);
                 fireChangeEvent(item);
@@ -219,7 +201,7 @@ public class AutoInstallController implements Initializable {
         taskDescriptionTextField.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
-                final TreeItem<Task> selectedItem = taskList.getSelectionModel().getSelectedItem();
+                final TreeItem<TaskViewModel> selectedItem = taskList.getSelectionModel().getSelectedItem();
                 if (selectedItem == null) {
                     return;
                 }
@@ -231,7 +213,7 @@ public class AutoInstallController implements Initializable {
         taskConditionsTextArea.textProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {
-                final TreeItem<Task> selectedItem = taskList.getSelectionModel().getSelectedItem();
+                final TreeItem<TaskViewModel> selectedItem = taskList.getSelectionModel().getSelectedItem();
                 if (selectedItem == null) {
                     return;
                 }
@@ -245,18 +227,16 @@ public class AutoInstallController implements Initializable {
 
     @FXML
     public void addTaskClick() {
-        final TreeItem<Task> selectedItem = taskList.getSelectionModel().getSelectedItem();
-        final CheckBoxTreeItem<Task> newItem = createTaskItem("task.initialDescription");
+        final TreeItem<TaskViewModel> selectedItem = taskList.getSelectionModel().getSelectedItem();
+        final CheckBoxTreeItem<TaskViewModel> newItem = createTaskItem("task.initialDescription");
         selectedItem.getChildren().add(newItem);
         taskList.getSelectionModel().select(newItem);
     }
 
     @FXML
     public void deleteTaskClick() {
-        final TreeItem<Task> selectedItem = taskList.getSelectionModel().getSelectedItem();
-        final int selectedIndex = taskList.getSelectionModel().getSelectedIndex();
-
-        final TreeItem<Task> parentItem = selectedItem.getParent();
+        final TreeItem<TaskViewModel> selectedItem = taskList.getSelectionModel().getSelectedItem();
+        final TreeItem<TaskViewModel> parentItem = selectedItem.getParent();
         final int itemPosition = parentItem.getChildren().indexOf(selectedItem);
         if (itemPosition < 0) {
             throw new IllegalArgumentException("can't find selectedItem in parentItem");
@@ -264,14 +244,15 @@ public class AutoInstallController implements Initializable {
 
         int insertionPos = itemPosition;
 
-        final Iterator<TreeItem<Task>> iter = selectedItem.getChildren().iterator();
+        final Iterator<TreeItem<TaskViewModel>> iter = selectedItem.getChildren().iterator();
         while (iter.hasNext()) {
-            final TreeItem<Task> child = iter.next();
+            final TreeItem<TaskViewModel> child = iter.next();
             iter.remove();
             parentItem.getChildren().add(++insertionPos, child);
         }
         parentItem.getChildren().remove(itemPosition);
-        taskList.getSelectionModel().select(selectedIndex - (itemPosition + 1));
+        taskList.getSelectionModel().select(parentItem);
+
     }
 
     @FXML

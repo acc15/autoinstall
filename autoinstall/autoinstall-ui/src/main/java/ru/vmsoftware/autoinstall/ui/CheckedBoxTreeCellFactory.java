@@ -12,6 +12,8 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 
 /**
+ * TreeCell factory which allows to use <i>additional</i> custom graphic with check-boxed TreeItem
+ *
  * @author Vyacheslav Mayorov
  * @since 2013-18-09
  */
