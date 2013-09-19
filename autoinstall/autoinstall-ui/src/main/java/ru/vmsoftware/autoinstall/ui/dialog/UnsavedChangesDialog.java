@@ -7,7 +7,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
-import ru.vmsoftware.autoinstall.ui.JavaFXUtils;
+import ru.vmsoftware.autoinstall.ui.javafx.JavaFxUtils;
 
 import java.io.IOException;
 import java.util.ResourceBundle;
@@ -30,7 +30,7 @@ public class UnsavedChangesDialog {
         stage.setResizable(false);
         stage.setWidth(WIDTH);
         stage.setHeight(HEIGHT);
-        JavaFXUtils.centerRelativeToOwner(stage);
+        JavaFxUtils.centerRelativeToOwner(stage);
         stage.setTitle(resourceBundle.getString("key.title"));
 
         final FXMLLoader loader = new FXMLLoader(

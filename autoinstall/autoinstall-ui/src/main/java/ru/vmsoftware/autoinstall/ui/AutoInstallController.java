@@ -4,20 +4,22 @@ import com.sun.javafx.collections.ObservableListWrapper;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.effect.ColorAdjust;
-import javafx.scene.effect.Effect;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.util.StringConverter;
 import ru.vmsoftware.autoinstall.core.actions.ActionType;
+import ru.vmsoftware.autoinstall.core.task.SerializerFactory;
+import ru.vmsoftware.autoinstall.core.task.Task;
+import ru.vmsoftware.autoinstall.core.task.TaskSerializerFactory;
 import ru.vmsoftware.autoinstall.ui.dialog.UnsavedChangesDialog;
 import ru.vmsoftware.autoinstall.ui.dialog.YesNoCancelEnum;
+import ru.vmsoftware.autoinstall.ui.javafx.CheckedBoxTreeCellFactory;
+import ru.vmsoftware.autoinstall.ui.javafx.JavaFxUtils;
+import ru.vmsoftware.autoinstall.ui.javafx.StringConverterAdapter;
 import ru.vmsoftware.autoinstall.ui.model.DocumentViewModel;
 import ru.vmsoftware.autoinstall.ui.model.TaskViewModel;
 
@@ -34,7 +36,6 @@ import java.util.WeakHashMap;
  */
 public class AutoInstallController implements Initializable {
 
-    private static final Effect DISABLED_EFFECT = new ColorAdjust(0, -1, 0, 0);
     private static final String TASK_INITIAL_DESCRIPTION = "task.initialDescription";
     private static final String TASK_ROOT_INITIAL_DESCRIPTION = "task.rootInitialDescription";
 
@@ -68,99 +69,9 @@ public class AutoInstallController implements Initializable {
 
     private DocumentViewModel document;
 
+    private SerializerFactory<Task> serializerFactory = new TaskSerializerFactory();
+
     private Stage stage;
-
-    private ImageView getIconByActionType(ActionType actionType) {
-        Image icon = cachedIcons.get(actionType);
-        if (icon == null) {
-            icon = new Image(
-                    AutoInstallController.class.getResource(actionType.getName() + "-action.png").toExternalForm());
-            cachedIcons.put(actionType, icon);
-        }
-        return new ImageView(icon);
-    }
-
-    private CheckBoxTreeItem<TaskViewModel> createTaskItem(String initialDescriptionKey) {
-        final TaskViewModel task = new TaskViewModel();
-        final CheckBoxTreeItem<TaskViewModel> item = new CheckBoxTreeItem<>(task);
-        task.setDescription(resourceBundle.getString(initialDescriptionKey));
-        item.setValue(task);
-        item.setSelected(true);
-        item.setExpanded(true);
-        item.setIndependent(true);
-        item.setGraphic(getIconByActionType(task.getActionType()));
-        return item;
-    }
-
-    private void updateTaskManagementItemsForSelectedTreeItem(TreeItem<TaskViewModel> selectedItem) {
-
-        if (selectedItem == null) {
-            deleteTaskMenuItem.setDisable(true);
-            addTaskMenuItem.setDisable(true);
-            deleteTaskIcon.setDisable(true);
-            addTaskIcon.setDisable(true);
-            addTaskIcon.setEffect(DISABLED_EFFECT);
-            deleteTaskIcon.setEffect(DISABLED_EFFECT);
-            return;
-        }
-
-        final boolean disableAdd = selectedItem.getValue().getActionType() != ActionType.NULL;
-        final boolean disableDelete = selectedItem.getParent() == null;
-
-        addTaskIcon.setDisable(disableAdd);
-        addTaskIcon.setEffect(disableAdd ? DISABLED_EFFECT : null);
-
-        deleteTaskIcon.setDisable(disableDelete);
-        deleteTaskIcon.setEffect(disableDelete ? DISABLED_EFFECT : null);
-
-        addTaskMenuItem.setDisable(disableAdd);
-        deleteTaskMenuItem.setDisable(disableDelete);
-    }
-
-    private void updateSceneForSelectedTreeItem(TreeItem<TaskViewModel> selectedItem) {
-
-        updateTaskManagementItemsForSelectedTreeItem(selectedItem);
-
-        if (selectedItem == null) {
-            taskDescriptionTextField.setDisable(true);
-            taskDescriptionTextField.setText(null);
-            taskActionComboBox.setDisable(true);
-            taskActionComboBox.setValue(null);
-            taskConditionsTextArea.setDisable(true);
-            taskConditionsTextArea.setText(null);
-            return;
-        }
-
-        final TaskViewModel task = selectedItem.getValue();
-        taskDescriptionTextField.setDisable(false);
-        taskDescriptionTextField.setText(task.getDescription());
-        taskConditionsTextArea.setDisable(false);
-        taskConditionsTextArea.setText(task.getConditions());
-        taskActionComboBox.setDisable(!selectedItem.getChildren().isEmpty());
-        taskActionComboBox.setValue(task.getActionType());
-
-    }
-
-    private static void fireChangeEvent(TreeItem<TaskViewModel> selectedItem) {
-        Event.fireEvent(selectedItem, new TreeItem.TreeModificationEvent<>(
-                TreeItem.valueChangedEvent(), selectedItem, selectedItem.getValue()));
-    }
-
-    public void setDocument(DocumentViewModel document) {
-        this.document = document;
-    }
-
-    public DocumentViewModel getDocument() {
-        return document;
-    }
-
-    public Stage getStage() {
-        return stage;
-    }
-
-    public void setStage(Stage stage) {
-        this.stage = stage;
-    }
 
     @FXML
     @Override
@@ -168,15 +79,10 @@ public class AutoInstallController implements Initializable {
 
         this.resourceBundle = resourceBundle;
 
-        taskList.setCellFactory(new CheckedBoxTreeCellFactory<>(new StringConverter<TreeItem<TaskViewModel>>() {
+        taskList.setCellFactory(new CheckedBoxTreeCellFactory<>(new StringConverterAdapter<TreeItem<TaskViewModel>>() {
             @Override
             public String toString(TreeItem<TaskViewModel> taskTreeItem) {
                 return taskTreeItem.getValue().getDescription();
-            }
-
-            @Override
-            public TreeItem<TaskViewModel> fromString(String s) {
-                return null;
             }
         }));
         taskList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TreeItem<TaskViewModel>>() {
@@ -191,15 +97,10 @@ public class AutoInstallController implements Initializable {
         taskList.setRoot(createTaskItem(TASK_ROOT_INITIAL_DESCRIPTION));
 
         taskActionComboBox.setItems(new ObservableListWrapper<>(ActionType.getAvailableActions()));
-        taskActionComboBox.setConverter(new StringConverter<ActionType>() {
+        taskActionComboBox.setConverter(new StringConverterAdapter<ActionType>() {
             @Override
             public String toString(ActionType actionType) {
                 return resourceBundle.getString("task." + actionType.getName());
-            }
-
-            @Override
-            public ActionType fromString(String s) {
-                return null;
             }
         });
         taskActionComboBox.valueProperty().addListener(new ChangeListener<ActionType>() {
@@ -222,7 +123,7 @@ public class AutoInstallController implements Initializable {
                 item.setGraphic(getIconByActionType(item.getValue().getActionType()));
 
                 updateTaskManagementItemsForSelectedTreeItem(item);
-                fireChangeEvent(item);
+                JavaFxUtils.fireTreeItemChangeEvent(item);
 
             }
         });
@@ -235,7 +136,7 @@ public class AutoInstallController implements Initializable {
                     return;
                 }
                 selectedItem.getValue().setDescription(newValue);
-                fireChangeEvent(selectedItem);
+                JavaFxUtils.fireTreeItemChangeEvent(selectedItem);
             }
         });
 
@@ -254,32 +155,6 @@ public class AutoInstallController implements Initializable {
 
     }
 
-    private File showSaveDialog() {
-        final FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle(resourceBundle.getString("key.save"));
-        fileChooser.setInitialFileName(document.getDocumentPath());
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter(resourceBundle.getString("key.xmlFiles"), "*.xml"),
-                new FileChooser.ExtensionFilter(resourceBundle.getString("key.allFiles"), "*.*"));
-        return fileChooser.showSaveDialog(stage);
-    }
-
-    private boolean checkForUnsavedChanges() {
-        if (!document.isModified()) {
-            return true;
-        }
-
-        final YesNoCancelEnum userChoice = UnsavedChangesDialog.showDialog(stage);
-        switch (userChoice) {
-            case YES:
-                showSaveDialog();
-                break;
-
-            case CANCEL:
-                return false;
-        }
-        return true;
-    }
 
     @FXML
     public void newInstallation() {
@@ -348,4 +223,99 @@ public class AutoInstallController implements Initializable {
     public void installClick() {
         System.out.println("install");
     }
+
+    public void setDocument(DocumentViewModel document) {
+        this.document = document;
+    }
+
+    public DocumentViewModel getDocument() {
+        return document;
+    }
+
+    public Stage getStage() {
+        return stage;
+    }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
+
+
+    private File showSaveDialog() {
+        final FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle(resourceBundle.getString("key.save"));
+        fileChooser.setInitialFileName(document.getDocumentPath());
+        fileChooser.getExtensionFilters().
+                addAll(JavaFxUtils.buildExtensionFilters(resourceBundle, serializerFactory.getSupportedExtensions()));
+        return fileChooser.showSaveDialog(stage);
+    }
+
+    private boolean checkForUnsavedChanges() {
+        if (!document.isModified()) {
+            return true;
+        }
+
+        final YesNoCancelEnum userChoice = UnsavedChangesDialog.showDialog(stage);
+        switch (userChoice) {
+            case YES:
+                showSaveDialog();
+                break;
+
+            case CANCEL:
+                return false;
+        }
+        return true;
+    }
+
+    private ImageView getIconByActionType(ActionType actionType) {
+        Image icon = cachedIcons.get(actionType);
+        if (icon == null) {
+            icon = new Image(
+                    AutoInstallController.class.getResource(actionType.getName() + "-action.png").toExternalForm());
+            cachedIcons.put(actionType, icon);
+        }
+        return new ImageView(icon);
+    }
+
+    private CheckBoxTreeItem<TaskViewModel> createTaskItem(String initialDescriptionKey) {
+        final TaskViewModel task = new TaskViewModel();
+        final CheckBoxTreeItem<TaskViewModel> item = new CheckBoxTreeItem<>(task);
+        task.setDescription(resourceBundle.getString(initialDescriptionKey));
+        item.setValue(task);
+        item.setSelected(true);
+        item.setExpanded(true);
+        item.setIndependent(true);
+        item.setGraphic(getIconByActionType(task.getActionType()));
+        return item;
+    }
+
+    private void setDisabledForTaskManagementItems(boolean disableAdd, boolean disableDelete) {
+        JavaFxUtils.setDisabledWithEffect(addTaskIcon, disableAdd);
+        JavaFxUtils.setDisabledWithEffect(deleteTaskIcon, disableDelete);
+        addTaskMenuItem.setDisable(disableAdd);
+        deleteTaskMenuItem.setDisable(disableDelete);
+    }
+
+    private void updateTaskManagementItemsForSelectedTreeItem(TreeItem<TaskViewModel> selectedItem) {
+        setDisabledForTaskManagementItems(
+                selectedItem == null || selectedItem.getValue().getActionType() != ActionType.NULL,
+                selectedItem == null || selectedItem.getParent() == null);
+    }
+
+    private void setupTaskControls(boolean disable, boolean disableType, TaskViewModel task) {
+        taskDescriptionTextField.setDisable(disable);
+        taskConditionsTextArea.setDisable(disable);
+        taskActionComboBox.setDisable(disable || disableType);
+        taskDescriptionTextField.setText(task != null ? task.getDescription() : null);
+        taskConditionsTextArea.setText(task != null ? task.getConditions() : null);
+        taskActionComboBox.setValue(task != null ? task.getActionType() : null);
+    }
+
+    private void updateSceneForSelectedTreeItem(TreeItem<TaskViewModel> selectedItem) {
+        updateTaskManagementItemsForSelectedTreeItem(selectedItem);
+        setupTaskControls(selectedItem == null,
+                selectedItem == null || !selectedItem.getChildren().isEmpty(),
+                selectedItem != null ? selectedItem.getValue() : null);
+    }
+
 }

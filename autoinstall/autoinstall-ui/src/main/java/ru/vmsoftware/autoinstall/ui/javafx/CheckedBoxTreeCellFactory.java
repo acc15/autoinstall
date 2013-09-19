@@ -1,4 +1,4 @@
-package ru.vmsoftware.autoinstall.ui;
+package ru.vmsoftware.autoinstall.ui.javafx;
 
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.CheckBoxTreeItem;
