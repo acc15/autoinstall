@@ -12,6 +12,7 @@ import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.Effect;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import ru.vmsoftware.autoinstall.core.actions.ActionType;
 import ru.vmsoftware.autoinstall.ui.dialog.UnsavedChangesDialog;
@@ -64,6 +65,8 @@ public class AutoInstallController implements Initializable {
     private Map<ActionType,Image> cachedIcons = new WeakHashMap<>();
 
     private DocumentViewModel document;
+
+    private Stage stage;
 
     private ImageView getIconByActionType(ActionType actionType) {
         Image icon = cachedIcons.get(actionType);
@@ -147,6 +150,14 @@ public class AutoInstallController implements Initializable {
 
     public DocumentViewModel getDocument() {
         return document;
+    }
+
+    public Stage getStage() {
+        return stage;
+    }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
     }
 
     @FXML
@@ -246,7 +257,7 @@ public class AutoInstallController implements Initializable {
             return true;
         }
 
-        final YesNoCancelEnum userChoice = UnsavedChangesDialog.showDialog();
+        final YesNoCancelEnum userChoice = UnsavedChangesDialog.showDialog(stage);
         switch (userChoice) {
             case CANCEL:
                 return false;

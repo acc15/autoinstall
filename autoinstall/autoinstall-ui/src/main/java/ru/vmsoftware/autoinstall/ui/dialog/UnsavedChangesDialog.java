@@ -6,6 +6,8 @@ import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.Window;
+import ru.vmsoftware.autoinstall.ui.JavaFXUtils;
 
 import java.io.IOException;
 import java.util.ResourceBundle;
@@ -19,10 +21,18 @@ public class UnsavedChangesDialog {
     private static final int WIDTH = 350;
     private static final int HEIGHT = 100;
 
-    public static YesNoCancelEnum showDialog() {
+    public static YesNoCancelEnum showDialog(Window owner) {
         final ResourceBundle resourceBundle = ResourceBundle.getBundle(UnsavedChangesDialog.class.getName());
 
-        final Stage stage = new Stage(StageStyle.UTILITY);
+        final Stage stage = new Stage(StageStyle.UNDECORATED);
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.initOwner(owner);
+        stage.setResizable(false);
+        stage.setWidth(WIDTH);
+        stage.setHeight(HEIGHT);
+        JavaFXUtils.centerRelativeToOwner(stage);
+        stage.setTitle(resourceBundle.getString("key.title"));
+
         final FXMLLoader loader = new FXMLLoader(
                 UnsavedChangesDialog.class.getResource("UnsavedChangesDialog.fxml"),
                 resourceBundle);
@@ -37,10 +47,7 @@ public class UnsavedChangesDialog {
         controller.stage = stage;
 
         final Scene scene = new Scene(root, WIDTH, HEIGHT);
-        stage.initModality(Modality.WINDOW_MODAL);
-        stage.setResizable(false);
         stage.setScene(scene);
-        stage.setTitle(resourceBundle.getString("key.title"));
         stage.showAndWait();
 
         return controller.whatWasChosen;

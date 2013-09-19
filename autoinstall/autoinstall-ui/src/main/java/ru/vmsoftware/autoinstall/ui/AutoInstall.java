@@ -42,18 +42,19 @@ public class AutoInstall extends Application {
                         (documentViewModel.isModified() ? " *" : "") + "]");
             }
         });
+        documentViewModel.markNew();
 
         final Parent root = (Parent)loader.load();
         final Scene scene = new Scene(root);
         stage.setMinWidth(MIN_WIDTH);
         stage.setMinHeight(MIN_HEIGHT);
         stage.setScene(scene);
-        stage.getIcons().add(new Image(AutoInstall.class.getResource("autoinstall.png").toString()));
+
+        stage.getIcons().add(new Image(AutoInstall.class.getResource("autoinstall.png").toExternalForm()));
 
         final AutoInstallController controller = loader.getController();
-
+        controller.setStage(stage);
         controller.setDocument(documentViewModel);
-        documentViewModel.markNew();
 
         stage.show();
 
