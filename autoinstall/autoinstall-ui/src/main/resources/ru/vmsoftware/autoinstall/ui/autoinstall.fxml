@@ -12,108 +12,124 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" opacity="1.0" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="ru.vmsoftware.autoinstall.ui.AutoInstallController">
-  <children>
-    <Label fx:id="titleLabel" prefHeight="14.0" text="%key.title" textAlignment="LEFT" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="16.0">
-      <labelFor>
-        <Button fx:id="installButton" alignment="CENTER" mnemonicParsing="false" onAction="#installClick" prefHeight="22.0" prefWidth="83.0" text="%key.installButton" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0" />
-      </labelFor>
-    </Label>
-    <fx:reference source="installButton" />
-    <SplitPane dividerPositions="0.35789473684210527" focusTraversable="true" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="48.0">
-      <items>
-        <AnchorPane id="AnchorPane" minWidth="180.0" prefHeight="236.0" prefWidth="144.0">
-          <children>
-            <Label text="%key.taskListLabel" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="7.0" />
-            <TreeView fx:id="taskList" prefHeight="317.0" prefWidth="238.0" AnchorPane.bottomAnchor="13.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="28.0">
-              <contextMenu>
-                <ContextMenu consumeAutoHidingEvents="false">
-                  <items>
-                    <MenuItem mnemonicParsing="false" onAction="#addTaskClick" text="%key.addTask" fx:id="addTaskMenuItem">
-                      <graphic>
-                        <ImageView>
-                          <image>
-                            <Image url="@autoinstall-add.png" />
-                          </image>
-                        </ImageView>
-                      </graphic>
-                    </MenuItem>
-                    <MenuItem mnemonicParsing="false" onAction="#deleteTaskClick" text="%key.deleteTask" fx:id="deleteTaskMenuItem">
-                      <graphic>
-                        <ImageView>
-                          <image>
-                            <Image url="@autoinstall-delete.png" />
-                          </image>
-                        </ImageView>
-                      </graphic>
-                    </MenuItem>
-                  </items>
-                </ContextMenu>
-              </contextMenu>
-            </TreeView>
-            <ImageView fx:id="deleteTaskIcon" fitHeight="15.499998476598133" fitWidth="20.666664123535156" layoutY="7.0" onMouseClicked="#deleteTaskClick" pickOnBounds="true" preserveRatio="true" styleClass="taskControlButton" AnchorPane.rightAnchor="13.5">
-              <image>
-                <Image url="@autoinstall-delete.png" />
-              </image>
-            </ImageView>
-            <ImageView fx:id="addTaskIcon" disable="false" fitHeight="15.499998476598133" fitWidth="20.666664123535156" layoutY="7.0" onMouseClicked="#addTaskClick" pickOnBounds="true" preserveRatio="true" styleClass="taskControlButton" AnchorPane.rightAnchor="33.0">
-              <image>
-                <Image url="@autoinstall-add.png" />
-              </image>
-            </ImageView>
-          </children>
-        </AnchorPane>
-        <ScrollPane id="taskProperties" fitToHeight="true" fitToWidth="true" hbarPolicy="AS_NEEDED" minWidth="200.0" prefViewportHeight="236.0" prefViewportWidth="306.0">
-          <content>
-            <VBox alignment="BOTTOM_LEFT" disable="false" fillWidth="true" focusTraversable="false" minWidth="-1.0" prefWidth="-1.0" snapToPixel="true" spacing="0.0">
-              <children>
-                <TitledPane fx:id="x1" animated="false" expanded="true" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" text="%key.commonPane">
-                  <content>
-                    <AnchorPane id="" minHeight="-1.0" prefHeight="55.0" prefWidth="309.0">
-                      <children>
-                        <Label layoutX="14.0" layoutY="8.0" text="%key.taskDescriptionLabel">
-                          <labelFor>
-                            <TextField fx:id="taskDescriptionTextField" disable="false" editable="true" layoutY="5.0" prefWidth="164.00009999999747" promptText="" AnchorPane.leftAnchor="134.0" AnchorPane.rightAnchor="11.0" />
-                          </labelFor>
-                        </Label>
-                        <Label layoutX="14.0" layoutY="31.0" text="%key.taskActionLabel">
-                          <labelFor>
-                            <ComboBox id="taskTypeComboBox" fx:id="taskActionComboBox" disable="false" layoutY="28.0" prefWidth="164.0" promptText="" AnchorPane.leftAnchor="135.0" AnchorPane.rightAnchor="11.0" />
-                          </labelFor>
-                        </Label>
-                        <fx:reference source="taskActionComboBox" />
-                        <fx:reference source="taskDescriptionTextField" />
-                      </children>
-                    </AnchorPane>
-                  </content>
-                </TitledPane>
-                <TitledPane animated="false" expanded="true" maxHeight="1.7976931348623157E308" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" text="%key.conditionsPane">
-                  <content>
-                    <AnchorPane minHeight="-1.0" prefHeight="120.0" prefWidth="-1.0">
-                      <children>
-                        <Label layoutX="14.0" layoutY="13.0" prefWidth="111.0" text="%key.conditionsLabel">
-                          <labelFor>
-                            <TextArea id="conditionsTextArea" fx:id="taskConditionsTextArea" prefHeight="-1.0" prefWidth="150.0" promptText="%key.conditionsPrompt" wrapText="true" AnchorPane.bottomAnchor="13.0" AnchorPane.leftAnchor="133.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="7.0" />
-                          </labelFor>
-                        </Label>
-                        <fx:reference source="taskConditionsTextArea" />
-                      </children>
-                    </AnchorPane>
-                  </content>
-                </TitledPane>
-                <TitledPane fx:id="x2" animated="false" collapsible="true" expanded="true" maxHeight="1.7976931348623157E308" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" text="%key.parametersPane" VBox.vgrow="SOMETIMES">
-                  <content>
-                    <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" />
-                  </content>
-                </TitledPane>
-              </children>
-            </VBox>
-          </content>
-        </ScrollPane>
-      </items>
-    </SplitPane>
-  </children>
-  <stylesheets>
-    <URL value="@autoinstall.css" />
-  </stylesheets>
-</AnchorPane>
+<VBox maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" opacity="1.0" prefHeight="427.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="ru.vmsoftware.autoinstall.ui.AutoInstallController">
+  <MenuBar>
+    <menus>
+      <Menu mnemonicParsing="false" text="%key.fileMenu">
+        <items>
+          <MenuItem mnemonicParsing="false" text="%key.close" />
+        </items>
+      </Menu>
+      <Menu mnemonicParsing="false" text="%key.helpMenu">
+        <items>
+          <MenuItem mnemonicParsing="false" text="%key.about" />
+        </items>
+      </Menu>
+    </menus>
+  </MenuBar>
+  <AnchorPane prefHeight="405.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
+    <children>
+      <Label fx:id="titleLabel" prefHeight="14.0" text="%key.title" textAlignment="LEFT" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="16.0">
+        <labelFor>
+          <Button fx:id="installButton" alignment="CENTER" mnemonicParsing="false" onAction="#installClick" prefHeight="22.0" prefWidth="83.0" text="%key.installButton" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0" />
+        </labelFor>
+      </Label>
+      <fx:reference source="installButton" />
+      <SplitPane dividerPositions="0.35789473684210527" focusTraversable="true" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="48.0">
+        <items>
+          <AnchorPane id="AnchorPane" minWidth="180.0" prefHeight="236.0" prefWidth="144.0">
+            <children>
+              <Label text="%key.taskListLabel" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="7.0" />
+              <TreeView fx:id="taskList" prefHeight="317.0" prefWidth="238.0" AnchorPane.bottomAnchor="13.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="13.0" AnchorPane.topAnchor="28.0">
+                <contextMenu>
+                  <ContextMenu consumeAutoHidingEvents="false">
+                    <items>
+                      <MenuItem mnemonicParsing="false" onAction="#addTaskClick" text="%key.addTask" fx:id="addTaskMenuItem">
+                        <graphic>
+                          <ImageView>
+                            <image>
+                              <Image url="@autoinstall-add.png" />
+                            </image>
+                          </ImageView>
+                        </graphic>
+                      </MenuItem>
+                      <MenuItem mnemonicParsing="false" onAction="#deleteTaskClick" text="%key.deleteTask" fx:id="deleteTaskMenuItem">
+                        <graphic>
+                          <ImageView>
+                            <image>
+                              <Image url="@autoinstall-delete.png" />
+                            </image>
+                          </ImageView>
+                        </graphic>
+                      </MenuItem>
+                    </items>
+                  </ContextMenu>
+                </contextMenu>
+              </TreeView>
+              <ImageView fx:id="deleteTaskIcon" fitHeight="15.499998476598133" fitWidth="20.666664123535156" layoutY="7.0" onMouseClicked="#deleteTaskClick" pickOnBounds="true" preserveRatio="true" styleClass="taskControlButton" AnchorPane.rightAnchor="13.5">
+                <image>
+                  <Image url="@autoinstall-delete.png" />
+                </image>
+              </ImageView>
+              <ImageView fx:id="addTaskIcon" disable="false" fitHeight="15.499998476598133" fitWidth="20.666664123535156" layoutY="7.0" onMouseClicked="#addTaskClick" pickOnBounds="true" preserveRatio="true" styleClass="taskControlButton" AnchorPane.rightAnchor="33.0">
+                <image>
+                  <Image url="@autoinstall-add.png" />
+                </image>
+              </ImageView>
+            </children>
+          </AnchorPane>
+          <ScrollPane id="taskProperties" fitToHeight="true" fitToWidth="true" hbarPolicy="AS_NEEDED" minWidth="200.0" prefViewportHeight="236.0" prefViewportWidth="306.0">
+            <content>
+              <VBox alignment="BOTTOM_LEFT" disable="false" fillWidth="true" focusTraversable="false" minWidth="-1.0" prefWidth="-1.0" snapToPixel="true" spacing="0.0">
+                <children>
+                  <TitledPane fx:id="x1" animated="false" expanded="true" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" text="%key.commonPane">
+                    <content>
+                      <AnchorPane id="" minHeight="-1.0" prefHeight="55.0" prefWidth="309.0">
+                        <children>
+                          <Label layoutX="14.0" layoutY="8.0" text="%key.taskDescriptionLabel">
+                            <labelFor>
+                              <TextField fx:id="taskDescriptionTextField" disable="false" editable="true" layoutY="5.0" prefWidth="164.00009999999747" promptText="" AnchorPane.leftAnchor="134.0" AnchorPane.rightAnchor="11.0" />
+                            </labelFor>
+                          </Label>
+                          <Label layoutX="14.0" layoutY="31.0" text="%key.taskActionLabel">
+                            <labelFor>
+                              <ComboBox id="taskTypeComboBox" fx:id="taskActionComboBox" disable="false" layoutY="28.0" prefWidth="164.0" promptText="" AnchorPane.leftAnchor="135.0" AnchorPane.rightAnchor="11.0" />
+                            </labelFor>
+                          </Label>
+                          <fx:reference source="taskActionComboBox" />
+                          <fx:reference source="taskDescriptionTextField" />
+                        </children>
+                      </AnchorPane>
+                    </content>
+                  </TitledPane>
+                  <TitledPane animated="false" expanded="true" maxHeight="1.7976931348623157E308" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" text="%key.conditionsPane">
+                    <content>
+                      <AnchorPane minHeight="-1.0" prefHeight="120.0" prefWidth="-1.0">
+                        <children>
+                          <Label layoutX="14.0" layoutY="13.0" prefWidth="111.0" text="%key.conditionsLabel">
+                            <labelFor>
+                              <TextArea id="conditionsTextArea" fx:id="taskConditionsTextArea" prefHeight="-1.0" prefWidth="150.0" promptText="%key.conditionsPrompt" wrapText="true" AnchorPane.bottomAnchor="13.0" AnchorPane.leftAnchor="133.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="7.0" />
+                            </labelFor>
+                          </Label>
+                          <fx:reference source="taskConditionsTextArea" />
+                        </children>
+                      </AnchorPane>
+                    </content>
+                  </TitledPane>
+                  <TitledPane fx:id="x2" animated="false" collapsible="true" expanded="true" maxHeight="1.7976931348623157E308" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" text="%key.parametersPane" VBox.vgrow="SOMETIMES">
+                    <content>
+                      <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" />
+                    </content>
+                  </TitledPane>
+                </children>
+              </VBox>
+            </content>
+          </ScrollPane>
+        </items>
+      </SplitPane>
+    </children>
+    <stylesheets>
+      <URL value="@autoinstall.css" />
+    </stylesheets>
+  </AnchorPane>
+</VBox>
