@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task xsi:schemaLocation="http://vmsoftware.ru/autoinstall/task task.xsd" 
+		xmlns="http://vmsoftware.ru/autoinstall/task" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<description>String</description>
+	<conditions>String</conditions>
+	<parameter name="abc">hjuhukio</parameter>
+	<task active="false">
+		<description>test task</description>
+		<conditions>a == b</conditions>
+		<task type="execute">
+			<parameter name="abc">hjuhukio</parameter>
+		</task>
+	</task>
+</task>

@@ -9,15 +9,15 @@
 					<xsd:complexType>
 						<xsd:simpleContent>
 							<xsd:extension base="xsd:string">
-                                <xsd:attribute name="name" type="xsd:string"/>
+                                <xsd:attribute name="name" type="xsd:string" use="required"/>
                             </xsd:extension>
 						</xsd:simpleContent>
 					</xsd:complexType>
 				</xsd:element>
 				<xsd:element ref="t:task" minOccurs="0" maxOccurs="unbounded"/>
 			</xsd:sequence>
-			<xsd:attribute name="active" type="xsd:boolean" use="optional" default="true"/>
-			<xsd:attribute name="type" use="optional" default="null">
+			<xsd:attribute name="active" type="xsd:boolean" default="true"/>
+			<xsd:attribute name="type" default="null">
 				<xsd:simpleType>
 					<xsd:restriction base="xsd:string">
 						<xsd:enumeration value="null"/>
