@@ -1,6 +1,7 @@
 package ru.vmsoftware.autoinstall.ui;
 
 import com.sun.javafx.collections.ObservableListWrapper;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
@@ -13,6 +14,9 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.StringConverter;
 import ru.vmsoftware.autoinstall.core.actions.ActionType;
+import ru.vmsoftware.autoinstall.ui.dialog.UnsavedChangesDialog;
+import ru.vmsoftware.autoinstall.ui.dialog.YesNoCancelEnum;
+import ru.vmsoftware.autoinstall.ui.model.DocumentViewModel;
 import ru.vmsoftware.autoinstall.ui.model.TaskViewModel;
 
 import java.net.URL;
@@ -28,6 +32,8 @@ import java.util.WeakHashMap;
 public class AutoInstallController implements Initializable {
 
     private static final Effect DISABLED_EFFECT = new ColorAdjust(0, -1, 0, 0);
+    private static final String TASK_INITIAL_DESCRIPTION = "task.initialDescription";
+    private static final String TASK_ROOT_INITIAL_DESCRIPTION = "task.rootInitialDescription";
 
     @FXML
     private TreeView<TaskViewModel> taskList;
@@ -56,6 +62,8 @@ public class AutoInstallController implements Initializable {
     private ResourceBundle resourceBundle;
 
     private Map<ActionType,Image> cachedIcons = new WeakHashMap<>();
+
+    private DocumentViewModel document;
 
     private ImageView getIconByActionType(ActionType actionType) {
         Image icon = cachedIcons.get(actionType);
@@ -133,6 +141,14 @@ public class AutoInstallController implements Initializable {
                 TreeItem.valueChangedEvent(), selectedItem, selectedItem.getValue()));
     }
 
+    public void setDocument(DocumentViewModel document) {
+        this.document = document;
+    }
+
+    public DocumentViewModel getDocument() {
+        return document;
+    }
+
     @FXML
     @Override
     public void initialize(final URL url, final ResourceBundle resourceBundle) {
@@ -159,7 +175,7 @@ public class AutoInstallController implements Initializable {
             }
         });
 
-        taskList.setRoot(createTaskItem("task.rootInitialDescription"));
+        taskList.setRoot(createTaskItem(TASK_ROOT_INITIAL_DESCRIPTION));
 
         taskActionComboBox.setItems(new ObservableListWrapper<>(ActionType.getAvailableActions()));
         taskActionComboBox.setConverter(new StringConverter<ActionType>() {
@@ -225,10 +241,56 @@ public class AutoInstallController implements Initializable {
 
     }
 
+    private boolean checkForUnsavedChanges() {
+        if (!document.isModified()) {
+            return true;
+        }
+
+        final YesNoCancelEnum userChoice = UnsavedChangesDialog.showDialog();
+        switch (userChoice) {
+            case CANCEL:
+                return false;
+        }
+        return true;
+    }
+
+    @FXML
+    public void newInstallation() {
+        if (!checkForUnsavedChanges()) {
+            return;
+        }
+        taskList.setRoot(createTaskItem(TASK_ROOT_INITIAL_DESCRIPTION));
+        document.markNew();
+    }
+
+    @FXML
+    public void open() {
+
+
+    }
+
+    @FXML
+    public void save() {
+
+    }
+
+    @FXML
+    public void saveAs() {
+
+    }
+
+    @FXML
+    public void close() {
+        if (!checkForUnsavedChanges()) {
+            return;
+        }
+        Platform.exit();
+    }
+
     @FXML
     public void addTaskClick() {
         final TreeItem<TaskViewModel> selectedItem = taskList.getSelectionModel().getSelectedItem();
-        final CheckBoxTreeItem<TaskViewModel> newItem = createTaskItem("task.initialDescription");
+        final CheckBoxTreeItem<TaskViewModel> newItem = createTaskItem(TASK_INITIAL_DESCRIPTION);
         selectedItem.getChildren().add(newItem);
         taskList.getSelectionModel().select(newItem);
     }
@@ -259,5 +321,4 @@ public class AutoInstallController implements Initializable {
     public void installClick() {
         System.out.println("install");
     }
-
 }

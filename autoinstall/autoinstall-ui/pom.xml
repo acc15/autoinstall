@@ -23,6 +23,11 @@
             <artifactId>autoinstall-core</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>ru.vmsoftware</groupId>
+            <artifactId>events</artifactId>
+            <version>1.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>

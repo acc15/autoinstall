@@ -17,7 +17,28 @@
     <menus>
       <Menu mnemonicParsing="false" text="%key.fileMenu">
         <items>
-          <MenuItem mnemonicParsing="false" text="%key.close" />
+          <MenuItem mnemonicParsing="false" onAction="#newInstallation" text="%key.new" />
+          <MenuItem mnemonicParsing="false" text="%key.open">
+            <graphic>
+              <ImageView fitHeight="0.0" fitWidth="0.0" pickOnBounds="true" preserveRatio="true">
+                <image>
+                  <Image url="@autoinstall-open.png" />
+                </image>
+              </ImageView>
+            </graphic>
+          </MenuItem>
+          <MenuItem mnemonicParsing="false" text="%key.save">
+            <graphic>
+              <ImageView fitHeight="0.0" fitWidth="0.0" pickOnBounds="true" preserveRatio="true">
+                <image>
+                  <Image url="@autoinstall-save.png" />
+                </image>
+              </ImageView>
+            </graphic>
+          </MenuItem>
+          <MenuItem mnemonicParsing="false" text="%key.saveAs" />
+          <SeparatorMenuItem mnemonicParsing="false" />
+          <MenuItem mnemonicParsing="false" onAction="#close" text="%key.close" />
         </items>
       </Menu>
       <Menu mnemonicParsing="false" text="%key.helpMenu">
