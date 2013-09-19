@@ -46,7 +46,7 @@ public class UnsavedChangesDialog {
         final UnsavedChangesDialog controller = loader.getController();
         controller.stage = stage;
 
-        final Scene scene = new Scene(root, WIDTH, HEIGHT);
+        final Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.showAndWait();
 

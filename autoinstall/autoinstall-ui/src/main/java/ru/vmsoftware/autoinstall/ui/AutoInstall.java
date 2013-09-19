@@ -33,7 +33,7 @@ public class AutoInstall extends Application {
                 AutoInstall.class.getResource("autoinstall.fxml"),
                 resourceBundle);
 
-        final DocumentViewModel documentViewModel = new DocumentViewModel(resourceBundle.getString("key.newName"));
+        final DocumentViewModel documentViewModel = new DocumentViewModel();
         Events.listen(documentViewModel, UIEvent.CHANGE, new NoArgListener() {
             @Override
             public void onEvent() {
@@ -42,7 +42,7 @@ public class AutoInstall extends Application {
                         (documentViewModel.isModified() ? " *" : "") + "]");
             }
         });
-        documentViewModel.markNew();
+        documentViewModel.markNew(resourceBundle.getString(DocumentViewModel.KEY_NEW_NAME));
 
         final Parent root = (Parent)loader.load();
         final Scene scene = new Scene(root);

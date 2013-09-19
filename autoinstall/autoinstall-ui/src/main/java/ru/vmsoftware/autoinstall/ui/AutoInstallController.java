@@ -12,6 +12,7 @@ import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.Effect;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import ru.vmsoftware.autoinstall.core.actions.ActionType;
@@ -20,6 +21,7 @@ import ru.vmsoftware.autoinstall.ui.dialog.YesNoCancelEnum;
 import ru.vmsoftware.autoinstall.ui.model.DocumentViewModel;
 import ru.vmsoftware.autoinstall.ui.model.TaskViewModel;
 
+import java.io.File;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.Map;
@@ -252,6 +254,16 @@ public class AutoInstallController implements Initializable {
 
     }
 
+    private File showSaveDialog() {
+        final FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle(resourceBundle.getString("key.save"));
+        fileChooser.setInitialFileName(document.getDocumentPath());
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter(resourceBundle.getString("key.xmlFiles"), "*.xml"),
+                new FileChooser.ExtensionFilter(resourceBundle.getString("key.allFiles"), "*.*"));
+        return fileChooser.showSaveDialog(stage);
+    }
+
     private boolean checkForUnsavedChanges() {
         if (!document.isModified()) {
             return true;
@@ -259,6 +271,10 @@ public class AutoInstallController implements Initializable {
 
         final YesNoCancelEnum userChoice = UnsavedChangesDialog.showDialog(stage);
         switch (userChoice) {
+            case YES:
+                showSaveDialog();
+                break;
+
             case CANCEL:
                 return false;
         }
@@ -271,7 +287,7 @@ public class AutoInstallController implements Initializable {
             return;
         }
         taskList.setRoot(createTaskItem(TASK_ROOT_INITIAL_DESCRIPTION));
-        document.markNew();
+        document.markNew(resourceBundle.getString(DocumentViewModel.KEY_NEW_NAME));
     }
 
     @FXML

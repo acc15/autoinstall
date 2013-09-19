@@ -9,18 +9,19 @@ import ru.vmsoftware.events.Events;
  */
 public class DocumentViewModel {
 
-    private final String newDocumentPath;
+    public static final String KEY_NEW_NAME = "key.newName";
+
     private String documentPath;
+    private boolean isNew;
     private boolean modified;
 
     private void setValues(String path, boolean modified) {
+        if (path.equals(documentPath) && this.modified == modified) {
+            return;
+        }
         this.documentPath = path;
         this.modified = modified;
         Events.emit(this, UIEvent.CHANGE);
-    }
-
-    public DocumentViewModel(String newDocumentPath) {
-        this.newDocumentPath = newDocumentPath;
     }
 
     public String getDocumentPath() {
@@ -31,12 +32,18 @@ public class DocumentViewModel {
         return modified;
     }
 
-    public void markSaved(String path) {
-        setValues(path, false);
+    public boolean isNew() {
+        return isNew;
     }
 
-    public void markNew() {
-        setValues(newDocumentPath, true);
+    public void markSaved(String path) {
+        setValues(path, false);
+        this.isNew = false;
+    }
+
+    public void markNew(String path) {
+        setValues(path, true);
+        this.isNew = true;
     }
 
     public void markDirty() {
