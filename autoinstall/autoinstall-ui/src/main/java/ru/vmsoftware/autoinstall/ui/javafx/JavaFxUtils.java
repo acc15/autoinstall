@@ -44,8 +44,8 @@ public class JavaFxUtils {
         return filters;
     }
 
-    public static void fireTreeItemChangeEvent(TreeItem<TaskViewModel> selectedItem) {
-        Event.fireEvent(selectedItem, new TreeItem.TreeModificationEvent<>(
-                TreeItem.valueChangedEvent(), selectedItem, selectedItem.getValue()));
+    public static void fireTreeItemChangeEvent(TreeItem<TaskViewModel> item) {
+        Event.fireEvent(item, new TreeItem.TreeModificationEvent<>(
+                TreeItem.valueChangedEvent(), item, item.getValue()));
     }
 }

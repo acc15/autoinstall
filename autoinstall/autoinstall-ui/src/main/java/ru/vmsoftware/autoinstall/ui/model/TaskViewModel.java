@@ -1,10 +1,9 @@
 package ru.vmsoftware.autoinstall.ui.model;
 
+import javafx.beans.property.*;
+import javafx.collections.ObservableList;
 import ru.vmsoftware.autoinstall.core.actions.ActionType;
 import ru.vmsoftware.autoinstall.core.params.Parameter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Model which is a mirror of {@link ru.vmsoftware.autoinstall.core.task.Task} domain model
@@ -15,40 +14,49 @@ import java.util.List;
  */
 public class TaskViewModel {
 
-    private String description = "";
-    private String conditions = "";
-    private ActionType actionType = ActionType.NULL;
-    private List<Parameter> parameters = new ArrayList<>();
+    private StringProperty description = new SimpleStringProperty();
+    private StringProperty conditions = new SimpleStringProperty();
+    private ObjectProperty<ActionType> actionType = new SimpleObjectProperty<>();
+    private ObservableList<Parameter> parameters = new SimpleListProperty<>();
 
-    public String getDescription() {
+    public StringProperty descriptionProperty() {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public String getDescription() {
+        return description.get();
     }
 
-    public String getConditions() {
+    public void setDescription(String description) {
+        this.description.set(description);
+    }
+
+    public StringProperty conditionsProperty() {
         return conditions;
     }
 
-    public void setConditions(String conditions) {
-        this.conditions = conditions;
+    public String getConditions() {
+        return conditions.get();
     }
 
-    public ActionType getActionType() {
+    public void setConditions(String conditions) {
+        this.conditions.set(conditions);
+    }
+
+    public ObjectProperty<ActionType> actionTypeProperty() {
         return actionType;
     }
 
-    public void setActionType(ActionType actionType) {
-        this.actionType = actionType;
+    public ActionType getActionType() {
+        return actionType.get();
     }
 
-    public List<Parameter> getParameters() {
+    public void setActionType(ActionType actionType) {
+        this.actionType.set(actionType);
+    }
+
+    public ObservableList<Parameter> getParameters() {
         return parameters;
     }
 
-    public void setParameters(List<Parameter> parameters) {
-        this.parameters = parameters;
-    }
 }
