@@ -18,7 +18,7 @@ public class ViewUtils {
         task.setActionType(viewModel.getValue().getActionType());
         task.setDescription(viewModel.getValue().getDescription());
         task.setConditions(viewModel.getValue().getConditions());
-        task.getParameters().addAll(viewModel.getValue().getParameters());
+        Task.copyParameters(viewModel.getValue().getParameters(), task.getParameters());
         final List<TaskViewModel> children = (List<TaskViewModel>)(List<?>) viewModel.getChildren();
         for (final TaskViewModel child: children) {
             task.getChildren().add(mapViewToDomain(child));
@@ -29,9 +29,16 @@ public class ViewUtils {
     public static TaskViewModel mapDomainToView(Task task) {
         final TaskViewModel viewModel = new TaskViewModel();
         viewModel.setSelected(task.isActive());
-        // TODO ViewModel should be created with attached listeners...
-        //viewModel.set
-        return null;
+        viewModel.getValue().setActionType(task.getActionType());
+        viewModel.getValue().setConditions(task.getConditions());
+        viewModel.getValue().setDescription(task.getDescription());
+        Task.copyParameters(task.getParameters(), viewModel.getValue().getParameters());
+        final List<Task> children = task.getChildren();
+        for (final Task child: children) {
+            final TaskViewModel viewChild = mapDomainToView(child);
+            viewModel.getChildren().add(viewChild);
+        }
+        return viewModel;
     }
 
 }

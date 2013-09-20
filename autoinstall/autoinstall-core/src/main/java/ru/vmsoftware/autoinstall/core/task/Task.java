@@ -21,6 +21,12 @@ public class Task {
     private ActionType actionType = ActionType.NULL;
     private List<Task> children;
 
+    public static void copyParameters(List<Parameter> from, List<Parameter> to) {
+        for (Parameter p: from) {
+            to.add(new Parameter(p.getName(), p.getValue()));
+        }
+    }
+
     public Task() {
         this(new ArrayList<Task>());
     }
