@@ -2,6 +2,7 @@ package ru.vmsoftware.autoinstall.ui;
 
 import com.sun.javafx.collections.ObservableListWrapper;
 import javafx.application.Platform;
+import javafx.beans.property.Property;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -74,8 +75,8 @@ public class AutoInstallController implements Initializable {
 
     private Stage stage;
 
-    private <T> ChangeListener<T> selectedItemBinder(String propertyName) {
-        return new SelectedTreeItemPropertyBinder<>(taskList, propertyName);
+    private <T> void bindToSelectedItemProperty(Property<T> property, String propertyName) {
+        property.addListener(new SelectedTreeItemPropertyBinder<>(taskList, propertyName));
     }
 
     @FXML
@@ -108,9 +109,10 @@ public class AutoInstallController implements Initializable {
                 return resourceBundle.getString("task." + actionType.getName());
             }
         });
-        taskActionComboBox.valueProperty().addListener(selectedItemBinder("actionType"));
-        taskDescriptionTextField.textProperty().addListener(selectedItemBinder("description"));
-        taskConditionsTextArea.textProperty().addListener(selectedItemBinder("conditions"));
+
+        bindToSelectedItemProperty(taskActionComboBox.valueProperty(), "actionType");
+        bindToSelectedItemProperty(taskDescriptionTextField.textProperty(), "description");
+        bindToSelectedItemProperty(taskConditionsTextArea.textProperty(), "conditions");
         updateSceneForSelectedTreeItem(null);
 
     }
