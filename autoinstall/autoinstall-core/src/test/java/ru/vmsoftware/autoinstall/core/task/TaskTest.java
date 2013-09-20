@@ -4,6 +4,9 @@ import org.junit.Test;
 import ru.vmsoftware.autoinstall.core.actions.ActionType;
 import ru.vmsoftware.autoinstall.core.params.Parameter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.fest.assertions.Assertions.assertThat;
 
 /**
@@ -11,6 +14,28 @@ import static org.fest.assertions.Assertions.assertThat;
  * @since 2013-18-09
  */
 public class TaskTest {
+
+    @Test
+    public void testCopyParameters() throws Exception {
+
+        final List<Parameter> sourceList = new ArrayList<>();
+        sourceList.add(new Parameter("a", "1"));
+        sourceList.add(new Parameter("b", "2"));
+        sourceList.add(new Parameter("c", "3"));
+
+        final List<Parameter> targetList = new ArrayList<>();
+        Task.copyParameters(sourceList, targetList);
+
+        assertThat(targetList).hasSize(sourceList.size());
+        for (int i=0; i<sourceList.size(); i++) {
+            final Parameter sourceParameter = sourceList.get(i);
+            final Parameter targetParameter = targetList.get(i);
+            assertThat(targetParameter).isNotSameAs(sourceParameter);
+            assertThat(targetParameter.getName()).isEqualTo(sourceParameter.getName());
+            assertThat(targetParameter.getValue()).isEqualTo(sourceParameter.getValue());
+        }
+
+    }
 
     @Test
     public void testDescriptionMethodsWorksCorrectly() throws Exception {
