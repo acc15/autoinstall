@@ -1,4 +1,4 @@
-package ru.vmsoftware.autoinstall.core.task;
+package ru.vmsoftware.autoinstall.core.serialization;
 
 import java.io.File;
 import java.util.List;

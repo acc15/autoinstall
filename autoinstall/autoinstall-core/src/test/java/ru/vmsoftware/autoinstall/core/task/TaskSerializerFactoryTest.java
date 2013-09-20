@@ -1,6 +1,9 @@
 package ru.vmsoftware.autoinstall.core.task;
 
 import org.junit.Test;
+import ru.vmsoftware.autoinstall.core.serialization.JAXBSerializer;
+import ru.vmsoftware.autoinstall.core.serialization.Serializer;
+import ru.vmsoftware.autoinstall.core.serialization.TaskSerializerFactory;
 
 import java.io.File;
 

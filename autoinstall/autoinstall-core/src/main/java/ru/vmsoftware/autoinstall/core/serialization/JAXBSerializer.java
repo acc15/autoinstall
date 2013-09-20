@@ -1,7 +1,8 @@
-package ru.vmsoftware.autoinstall.core.task;
+package ru.vmsoftware.autoinstall.core.serialization;
 
 import ru.vmsoftware.autoinstall.core.actions.ActionType;
 import ru.vmsoftware.autoinstall.core.params.Parameter;
+import ru.vmsoftware.autoinstall.core.task.Task;
 import ru.vmsoftware.autoinstall.task.JAXBTask;
 import ru.vmsoftware.autoinstall.task.ObjectFactory;
 

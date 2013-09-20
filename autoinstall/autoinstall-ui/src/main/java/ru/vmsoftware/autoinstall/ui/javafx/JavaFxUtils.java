@@ -8,7 +8,7 @@ import javafx.scene.effect.Effect;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import ru.vmsoftware.autoinstall.ui.model.TaskViewModel;
+import ru.vmsoftware.autoinstall.ui.model.TaskItemModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +44,7 @@ public class JavaFxUtils {
         return filters;
     }
 
-    public static void fireTreeItemChangeEvent(TreeItem<TaskViewModel> item) {
+    public static void fireTreeItemChangeEvent(TreeItem<TaskItemModel> item) {
         Event.fireEvent(item, new TreeItem.TreeModificationEvent<>(
                 TreeItem.valueChangedEvent(), item, item.getValue()));
     }
