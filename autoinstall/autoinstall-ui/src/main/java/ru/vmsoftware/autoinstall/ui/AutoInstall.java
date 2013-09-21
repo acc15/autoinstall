@@ -6,9 +6,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import ru.vmsoftware.autoinstall.ui.model.DocumentViewModel;
-import ru.vmsoftware.events.Events;
-import ru.vmsoftware.events.listeners.NoArgListener;
 
 import java.util.ResourceBundle;
 
@@ -33,17 +30,6 @@ public class AutoInstall extends Application {
                 AutoInstall.class.getResource("autoinstall.fxml"),
                 resourceBundle);
 
-        final DocumentViewModel documentViewModel = new DocumentViewModel();
-        Events.listen(documentViewModel, UIEvent.CHANGE, new NoArgListener() {
-            @Override
-            public void onEvent() {
-                final String title = resourceBundle.getString("key.title");
-                stage.setTitle(title + " [" + documentViewModel.getDocumentPath() +
-                        (documentViewModel.isModified() ? " *" : "") + "]");
-            }
-        });
-        documentViewModel.markNew(resourceBundle.getString(DocumentViewModel.KEY_NEW_NAME));
-
         final Parent root = (Parent)loader.load();
         final Scene scene = new Scene(root);
         stage.setMinWidth(MIN_WIDTH);
@@ -53,9 +39,7 @@ public class AutoInstall extends Application {
         stage.getIcons().add(new Image(AutoInstall.class.getResource("autoinstall.png").toExternalForm()));
 
         final AutoInstallController controller = loader.getController();
-        controller.setStage(stage);
-        controller.setDocument(documentViewModel);
-
+        controller.initStage(stage);
         stage.show();
 
 

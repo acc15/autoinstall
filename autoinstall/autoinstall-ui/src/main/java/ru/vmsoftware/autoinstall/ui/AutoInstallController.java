@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import javafx.beans.property.Property;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -24,16 +25,16 @@ import ru.vmsoftware.autoinstall.ui.javafx.JavaFxUtils;
 import ru.vmsoftware.autoinstall.ui.javafx.SelectedTreeItemPropertyBinder;
 import ru.vmsoftware.autoinstall.ui.javafx.StringConverterAdapter;
 import ru.vmsoftware.autoinstall.ui.model.DocumentViewModel;
+import ru.vmsoftware.autoinstall.ui.model.ParameterViewModel;
 import ru.vmsoftware.autoinstall.ui.model.TaskItemModel;
 import ru.vmsoftware.autoinstall.ui.model.TaskViewModel;
+import ru.vmsoftware.events.Events;
+import ru.vmsoftware.events.listeners.SimpleListener;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.WeakHashMap;
+import java.util.*;
 
 /**
  * @author Vyacheslav Mayorov
@@ -72,7 +73,21 @@ public class AutoInstallController implements Initializable {
 
     private Map<ActionType,Image> cachedIcons = new WeakHashMap<>();
 
-    private DocumentViewModel document;
+    private DocumentViewModel document = new DocumentViewModel();
+
+    private final ChangeListener<Object> documentModificationListener = new ChangeListener<Object>() {
+        @Override
+        public void changed(ObservableValue observableValue, Object o, Object o2) {
+            document.markDirty();
+        }
+    };
+    private final ListChangeListener<Object> documentModificationListListener = new ListChangeListener<Object>() {
+        @Override
+        public void onChanged(Change<?> change) {
+            document.markDirty();
+        }
+    };
+
 
     private SerializerFactory<Task> serializerFactory = new TaskSerializerFactory();
 
@@ -81,6 +96,8 @@ public class AutoInstallController implements Initializable {
     private <T> void bindToSelectedItemProperty(Property<T> property, String propertyName) {
         property.addListener(new SelectedTreeItemPropertyBinder<>(taskList, propertyName));
     }
+
+
 
     @FXML
     @Override
@@ -103,7 +120,7 @@ public class AutoInstallController implements Initializable {
             }
         });
 
-        taskList.setRoot(createTaskItem(TASK_ROOT_INITIAL_DESCRIPTION));
+        taskList.setRoot(createTaskViewModel(TASK_ROOT_INITIAL_DESCRIPTION));
 
         taskActionComboBox.setItems(new ObservableListWrapper<>(ActionType.getAvailableActions()));
         taskActionComboBox.setConverter(new StringConverterAdapter<ActionType>() {
@@ -125,7 +142,7 @@ public class AutoInstallController implements Initializable {
         if (!checkForUnsavedChanges()) {
             return;
         }
-        taskList.setRoot(createTaskItem(TASK_ROOT_INITIAL_DESCRIPTION));
+        taskList.setRoot(createTaskViewModel(TASK_ROOT_INITIAL_DESCRIPTION));
         document.markNew(resourceBundle.getString(DocumentViewModel.KEY_NEW_NAME));
     }
 
@@ -156,7 +173,7 @@ public class AutoInstallController implements Initializable {
     @FXML
     public void addTaskClick() {
         final TreeItem<TaskItemModel> selectedItem = taskList.getSelectionModel().getSelectedItem();
-        final CheckBoxTreeItem<TaskItemModel> newItem = createTaskItem(TASK_INITIAL_DESCRIPTION);
+        final CheckBoxTreeItem<TaskItemModel> newItem = createTaskViewModel(TASK_INITIAL_DESCRIPTION);
         selectedItem.getChildren().add(newItem);
         taskList.getSelectionModel().select(newItem);
     }
@@ -187,20 +204,18 @@ public class AutoInstallController implements Initializable {
         System.out.println("install");
     }
 
-    public void setDocument(DocumentViewModel document) {
-        this.document = document;
-    }
-
-    public DocumentViewModel getDocument() {
-        return document;
-    }
-
-    public Stage getStage() {
-        return stage;
-    }
-
-    public void setStage(Stage stage) {
+    public void initStage(final Stage stage) {
         this.stage = stage;
+        this.document = new DocumentViewModel();
+        Events.listen(document, UIEvent.CHANGE, new SimpleListener<DocumentViewModel, UIEvent, Object>() {
+            @Override
+            public void onEvent(DocumentViewModel document, UIEvent type, Object data) {
+                final String title = resourceBundle.getString("key.title");
+                stage.setTitle(title + " [" + document.getDocumentPath() +
+                        (document.isModified() ? " *" : "") + "]");
+            }
+        });
+        document.markNew(resourceBundle.getString(DocumentViewModel.KEY_NEW_NAME));
     }
 
 
@@ -251,26 +266,47 @@ public class AutoInstallController implements Initializable {
         return new ImageView(icon);
     }
 
-    private TaskViewModel createTaskItem(String initialDescriptionKey) {
-        final TaskViewModel taskItem = new TaskViewModel();
-        final TaskItemModel task = taskItem.getValue();
-        task.descriptionProperty().addListener(new ChangeListener<String>() {
+    private void bindParameterListeners(final ParameterViewModel viewModel) {
+        viewModel.nameProperty().addListener(documentModificationListener);
+        viewModel.valueProperty().addListener(documentModificationListener);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void bindViewModelListeners(final TaskViewModel viewModel) {
+        viewModel.selectedProperty().addListener(documentModificationListener);
+        viewModel.getValue().descriptionProperty().addListener(documentModificationListener);
+        viewModel.getValue().descriptionProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String s, String s2) {
-                JavaFxUtils.fireTreeItemChangeEvent(taskItem);
+                JavaFxUtils.fireTreeItemChangeEvent(viewModel);
             }
         });
-        task.actionTypeProperty().addListener(new ChangeListener<ActionType>() {
+        viewModel.getValue().conditionsProperty().addListener(documentModificationListener);
+        viewModel.getValue().actionTypeProperty().addListener(documentModificationListener);
+        viewModel.getValue().actionTypeProperty().addListener(new ChangeListener<ActionType>() {
             @Override
             public void changed(ObservableValue<? extends ActionType> o, ActionType old, ActionType actionType) {
-                taskItem.setGraphic(getIconByActionType(actionType));
-                updateTaskManagementItemsForSelectedTreeItem(taskItem);
-                JavaFxUtils.fireTreeItemChangeEvent(taskItem);
+                viewModel.setGraphic(getIconByActionType(actionType));
+                updateTaskManagementItemsForSelectedTreeItem(viewModel);
+                JavaFxUtils.fireTreeItemChangeEvent(viewModel);
             }
         });
+        viewModel.getValue().getParameters().addListener(documentModificationListListener);
+        for (final ParameterViewModel parameterViewModel: viewModel.getValue().getParameters()) {
+            bindParameterListeners(parameterViewModel);
+        }
+        viewModel.getChildren().addListener(documentModificationListListener);
+        for (final TaskViewModel child: (List<TaskViewModel>)(List<?>)viewModel.getChildren()) {
+            bindViewModelListeners(child);
+        }
+    }
 
-        task.setDescription(resourceBundle.getString(initialDescriptionKey));
-        task.setActionType(ActionType.NULL);
+    private TaskViewModel createTaskViewModel(String initialDescriptionKey) {
+        final TaskViewModel taskItem = new TaskViewModel();
+        taskItem.getValue().setDescription(resourceBundle.getString(initialDescriptionKey));
+        taskItem.getValue().setActionType(ActionType.NULL);
+        taskItem.setGraphic(getIconByActionType(ActionType.NULL));
+        bindViewModelListeners(taskItem);
         return taskItem;
     }
 

@@ -1,6 +1,8 @@
 package ru.vmsoftware.autoinstall.ui;
 
+import ru.vmsoftware.autoinstall.core.params.Parameter;
 import ru.vmsoftware.autoinstall.core.task.Task;
+import ru.vmsoftware.autoinstall.ui.model.ParameterViewModel;
 import ru.vmsoftware.autoinstall.ui.model.TaskViewModel;
 
 import java.util.List;
@@ -18,7 +20,10 @@ public class ViewUtils {
         task.setActionType(viewModel.getValue().getActionType());
         task.setDescription(viewModel.getValue().getDescription());
         task.setConditions(viewModel.getValue().getConditions());
-        Task.copyParameters(viewModel.getValue().getParameters(), task.getParameters());
+        for (final ParameterViewModel parameterViewModel: viewModel.getValue().getParameters()) {
+            task.getParameters().add(new Parameter(parameterViewModel.getName(), parameterViewModel.getValue()));
+        }
+
         final List<TaskViewModel> children = (List<TaskViewModel>)(List<?>) viewModel.getChildren();
         for (final TaskViewModel child: children) {
             task.getChildren().add(mapViewToDomain(child));
@@ -32,7 +37,14 @@ public class ViewUtils {
         viewModel.getValue().setActionType(task.getActionType());
         viewModel.getValue().setConditions(task.getConditions());
         viewModel.getValue().setDescription(task.getDescription());
-        Task.copyParameters(task.getParameters(), viewModel.getValue().getParameters());
+
+        for (final Parameter parameter: task.getParameters()) {
+            final ParameterViewModel parameterViewModel = new ParameterViewModel();
+            parameterViewModel.setName(parameter.getName());
+            parameterViewModel.setValue(parameter.getValue());
+            viewModel.getValue().getParameters().add(parameterViewModel);
+        }
+
         final List<Task> children = task.getChildren();
         for (final Task child: children) {
             final TaskViewModel viewChild = mapDomainToView(child);

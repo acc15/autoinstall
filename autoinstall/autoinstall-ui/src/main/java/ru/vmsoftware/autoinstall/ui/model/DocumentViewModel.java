@@ -42,7 +42,7 @@ public class DocumentViewModel {
     }
 
     public void markNew(String path) {
-        setValues(path, true);
+        setValues(path, false);
         this.isNew = true;
     }
 

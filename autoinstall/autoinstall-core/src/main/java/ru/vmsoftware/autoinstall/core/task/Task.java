@@ -21,17 +21,6 @@ public class Task {
     private ActionType actionType = ActionType.NULL;
     private List<Task> children;
 
-    /**
-     * Copies all parameters {@code from} list {@code to} list creating new instances of parameter
-     * @param from source parameter list
-     * @param to target parameter list
-     */
-    public static void copyParameters(List<Parameter> from, List<Parameter> to) {
-        for (Parameter p: from) {
-            to.add(new Parameter(p.getName(), p.getValue()));
-        }
-    }
-
     public Task() {
         this(new ArrayList<Task>());
     }
