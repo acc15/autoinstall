@@ -24,7 +24,4 @@
       </image>
     </ImageView>
   </children>
-  <stylesheets>
-    <URL value="@UnsavedChangesDialog.css" />
-  </stylesheets>
 </AnchorPane>

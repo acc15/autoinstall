@@ -24,7 +24,7 @@ public class UnsavedChangesDialog {
     public static YesNoCancelEnum showDialog(Window owner) {
         final ResourceBundle resourceBundle = ResourceBundle.getBundle(UnsavedChangesDialog.class.getName());
 
-        final Stage stage = new Stage(StageStyle.UNDECORATED);
+        final Stage stage = new Stage(StageStyle.UTILITY);
         stage.initModality(Modality.WINDOW_MODAL);
         stage.initOwner(owner);
         stage.setResizable(false);

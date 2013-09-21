@@ -1,14 +1,12 @@
 package ru.vmsoftware.autoinstall.ui.model;
 
-import com.sun.javafx.collections.ObservableListWrapper;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import ru.vmsoftware.autoinstall.core.actions.ActionType;
-
-import java.util.ArrayList;
 
 /**
  * Model which is a mirror of {@link ru.vmsoftware.autoinstall.core.task.Task} domain model
@@ -22,8 +20,7 @@ public class TaskItemModel {
     private StringProperty description = new SimpleStringProperty();
     private StringProperty conditions = new SimpleStringProperty();
     private ObjectProperty<ActionType> actionType = new SimpleObjectProperty<>();
-    private ObservableList<ParameterViewModel> parameters = new ObservableListWrapper<>(
-            new ArrayList<ParameterViewModel>());
+    private ObservableList<ParameterViewModel> parameters = FXCollections.observableArrayList();
 
     public StringProperty descriptionProperty() {
         return description;
