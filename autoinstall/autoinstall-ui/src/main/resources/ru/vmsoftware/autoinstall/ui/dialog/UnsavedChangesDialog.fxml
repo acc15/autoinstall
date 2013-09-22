@@ -8,10 +8,10 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.paint.*?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="94.00009999999747" prefWidth="360.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="ru.vmsoftware.autoinstall.ui.dialog.UnsavedChangesDialog">
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="450.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="ru.vmsoftware.autoinstall.ui.dialog.UnsavedChangesDialog">
   <children>
-    <Label layoutX="78.0" layoutY="14.0" text="%key.unsavedChangesLabel" />
-    <HBox alignment="CENTER_RIGHT" prefHeight="19.0" prefWidth="332.0" spacing="5.0" AnchorPane.bottomAnchor="13.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0">
+    <Label contentDisplay="CENTER" graphicTextGap="0.0" prefHeight="48.0" prefWidth="358.0" text="%key.unsavedChangesLabel" underline="false" AnchorPane.bottomAnchor="38.0" AnchorPane.leftAnchor="78.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0" />
+    <HBox alignment="CENTER_RIGHT" prefHeight="19.0" prefWidth="332.0" spacing="5.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0">
       <children>
         <Button defaultButton="true" mnemonicParsing="false" onAction="#save" text="%key.save" />
         <Button mnemonicParsing="false" onAction="#dontSave" text="%key.dontSave" />

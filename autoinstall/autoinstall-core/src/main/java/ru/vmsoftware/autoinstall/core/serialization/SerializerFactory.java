@@ -11,5 +11,6 @@ public interface SerializerFactory<T> {
 
     Serializer<T> createSerializer(File file);
     List<String> getSupportedExtensions();
+    String getDefaultExtension();
 
 }

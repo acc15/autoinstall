@@ -21,4 +21,8 @@ public class TaskSerializerFactory implements SerializerFactory<Task> {
         return Arrays.asList("xml");
     }
 
+    @Override
+    public String getDefaultExtension() {
+        return "xml";
+    }
 }

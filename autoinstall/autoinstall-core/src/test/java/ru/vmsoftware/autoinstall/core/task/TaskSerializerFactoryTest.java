@@ -31,6 +31,9 @@ public class TaskSerializerFactoryTest {
     @Test
     public void testGetDefaultExtensionReturnsXml() throws Exception {
         final TaskSerializerFactory factory = new TaskSerializerFactory();
-        assertThat(factory.getSupportedExtensions()).containsExactly("xml");
+        assertThat(factory.getDefaultExtension()).isEqualTo("xml");
     }
+
+
+
 }

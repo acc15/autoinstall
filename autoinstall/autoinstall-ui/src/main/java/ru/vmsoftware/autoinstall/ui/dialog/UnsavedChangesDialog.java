@@ -18,7 +18,7 @@ import java.util.ResourceBundle;
  */
 public class UnsavedChangesDialog {
 
-    private static final int WIDTH = 350;
+    private static final int WIDTH = 400;
     private static final int HEIGHT = 100;
 
     public static YesNoCancelEnum showDialog(Window owner) {

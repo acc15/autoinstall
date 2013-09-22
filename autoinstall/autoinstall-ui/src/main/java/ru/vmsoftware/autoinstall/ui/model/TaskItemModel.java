@@ -17,9 +17,9 @@ import ru.vmsoftware.autoinstall.core.actions.ActionType;
  */
 public class TaskItemModel {
 
-    private StringProperty description = new SimpleStringProperty();
-    private StringProperty conditions = new SimpleStringProperty();
-    private ObjectProperty<ActionType> actionType = new SimpleObjectProperty<>();
+    private StringProperty description = new SimpleStringProperty("");
+    private StringProperty conditions = new SimpleStringProperty("");
+    private ObjectProperty<ActionType> actionType = new SimpleObjectProperty<>(ActionType.NULL);
     private ObservableList<ParameterViewModel> parameters = FXCollections.observableArrayList();
 
     public StringProperty descriptionProperty() {

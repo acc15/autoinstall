@@ -215,7 +215,8 @@ public class AutoInstallController implements Initializable {
                         (document.isModified() ? " *" : "") + "]");
             }
         });
-        document.markNew(resourceBundle.getString(DocumentViewModel.KEY_NEW_NAME));
+        document.markNew(resourceBundle.getString(DocumentViewModel.KEY_NEW_NAME) + "." +
+                serializerFactory.getDefaultExtension());
     }
 
 
