@@ -12,7 +12,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 
-<VBox maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" opacity="1.0" prefHeight="427.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="ru.vmsoftware.autoinstall.ui.AutoInstallController">
+<VBox maxHeight="+Infinity" maxWidth="+Infinity" minHeight="-Infinity" minWidth="-Infinity" opacity="1.0" prefHeight="427.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="ru.vmsoftware.autoinstall.ui.AutoInstallMain">
   <MenuBar>
     <menus>
       <Menu mnemonicParsing="false" text="%key.fileMenu">
@@ -22,7 +22,7 @@
             <graphic>
               <ImageView fitHeight="0.0" fitWidth="0.0" pickOnBounds="true" preserveRatio="true">
                 <image>
-                  <Image url="@autoinstall-open.png" />
+                  <Image url="@icons/autoinstall-open.png" />
                 </image>
               </ImageView>
             </graphic>
@@ -31,7 +31,7 @@
             <graphic>
               <ImageView fitHeight="0.0" fitWidth="0.0" pickOnBounds="true" preserveRatio="true">
                 <image>
-                  <Image url="@autoinstall-save.png" />
+                  <Image url="@icons/autoinstall-save.png" />
                 </image>
               </ImageView>
             </graphic>
@@ -50,7 +50,7 @@
   </MenuBar>
   <AnchorPane prefHeight="405.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
     <children>
-      <Label fx:id="titleLabel" prefHeight="14.0" text="%key.title" textAlignment="LEFT" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="16.0">
+      <Label fx:id="titleLabel" prefHeight="14.0" text="%fxml.title" textAlignment="LEFT" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="16.0">
         <labelFor>
           <Button fx:id="installButton" alignment="CENTER" mnemonicParsing="false" onAction="#installClick" prefHeight="22.0" prefWidth="83.0" text="%key.installButton" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0" />
         </labelFor>
@@ -69,7 +69,7 @@
                         <graphic>
                           <ImageView>
                             <image>
-                              <Image url="@autoinstall-add.png" />
+                              <Image url="@icons/autoinstall-add.png" />
                             </image>
                           </ImageView>
                         </graphic>
@@ -78,7 +78,7 @@
                         <graphic>
                           <ImageView>
                             <image>
-                              <Image url="@autoinstall-delete.png" />
+                              <Image url="@icons/autoinstall-delete.png" />
                             </image>
                           </ImageView>
                         </graphic>
@@ -89,12 +89,12 @@
               </TreeView>
               <ImageView fx:id="deleteTaskIcon" fitHeight="15.499998476598133" fitWidth="20.666664123535156" layoutY="7.0" onMouseClicked="#deleteTaskClick" pickOnBounds="true" preserveRatio="true" styleClass="taskControlButton" AnchorPane.rightAnchor="13.5">
                 <image>
-                  <Image url="@autoinstall-delete.png" />
+                  <Image url="@icons/autoinstall-delete.png" />
                 </image>
               </ImageView>
               <ImageView fx:id="addTaskIcon" disable="false" fitHeight="15.499998476598133" fitWidth="20.666664123535156" layoutY="7.0" onMouseClicked="#addTaskClick" pickOnBounds="true" preserveRatio="true" styleClass="taskControlButton" AnchorPane.rightAnchor="33.0">
                 <image>
-                  <Image url="@autoinstall-add.png" />
+                  <Image url="@icons/autoinstall-add.png" />
                 </image>
               </ImageView>
             </children>
@@ -150,7 +150,7 @@
       </SplitPane>
     </children>
     <stylesheets>
-      <URL value="@autoinstall.css" />
+      <URL value="@AutoInstallMain.css" />
     </stylesheets>
   </AnchorPane>
 </VBox>

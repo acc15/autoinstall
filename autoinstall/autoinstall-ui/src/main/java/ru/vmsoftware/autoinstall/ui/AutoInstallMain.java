@@ -7,7 +7,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -20,10 +19,7 @@ import ru.vmsoftware.autoinstall.core.serialization.TaskSerializerFactory;
 import ru.vmsoftware.autoinstall.core.task.Task;
 import ru.vmsoftware.autoinstall.ui.dialog.UnsavedChangesDialog;
 import ru.vmsoftware.autoinstall.ui.dialog.YesNoCancelEnum;
-import ru.vmsoftware.autoinstall.ui.javafx.CheckedBoxTreeCellFactory;
-import ru.vmsoftware.autoinstall.ui.javafx.JavaFxUtils;
-import ru.vmsoftware.autoinstall.ui.javafx.SelectedTreeItemPropertyBinder;
-import ru.vmsoftware.autoinstall.ui.javafx.StringConverterAdapter;
+import ru.vmsoftware.autoinstall.ui.javafx.*;
 import ru.vmsoftware.autoinstall.ui.model.DocumentViewModel;
 import ru.vmsoftware.autoinstall.ui.model.ParameterViewModel;
 import ru.vmsoftware.autoinstall.ui.model.TaskItemModel;
@@ -33,17 +29,20 @@ import ru.vmsoftware.events.listeners.SimpleListener;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.*;
 
 /**
  * @author Vyacheslav Mayorov
  * @since 2013-17-09
  */
-public class AutoInstallController implements Initializable {
+public class AutoInstallMain implements StageController {
 
     private static final String TASK_INITIAL_DESCRIPTION = "task.initialDescription";
     private static final String TASK_ROOT_INITIAL_DESCRIPTION = "task.rootInitialDescription";
+
+    private static final int MIN_WIDTH = 500;
+    private static final int MIN_HEIGHT = 300;
+
 
     @FXML
     private TreeView<TaskItemModel> taskList;
@@ -97,13 +96,24 @@ public class AutoInstallController implements Initializable {
         property.addListener(new SelectedTreeItemPropertyBinder<>(taskList, propertyName));
     }
 
-
-
-    @FXML
     @Override
-    public void initialize(final URL url, final ResourceBundle resourceBundle) {
-
+    public void initialize(Stage stage, ResourceBundle resourceBundle) {
         this.resourceBundle = resourceBundle;
+        this.stage = stage;
+
+        stage.setMinWidth(MIN_WIDTH);
+        stage.setMinHeight(MIN_HEIGHT);
+
+        Events.listen(document, UIEvent.CHANGE, new SimpleListener<DocumentViewModel, UIEvent, Object>() {
+            @Override
+            public void onEvent(DocumentViewModel document, UIEvent type, Object data) {
+                final String title = AutoInstallMain.this.resourceBundle.getString("fxml.title");
+                AutoInstallMain.this.stage.setTitle(title + " [" + document.getDocumentPath() +
+                        (document.isModified() ? " *" : "") + "]");
+            }
+        });
+        document.markNew(resourceBundle.getString(DocumentViewModel.KEY_NEW_NAME) + "." +
+                serializerFactory.getDefaultExtension());
 
         taskList.setCellFactory(new CheckedBoxTreeCellFactory<>(new StringConverterAdapter<TreeItem<TaskItemModel>>() {
             @Override
@@ -126,7 +136,7 @@ public class AutoInstallController implements Initializable {
         taskActionComboBox.setConverter(new StringConverterAdapter<ActionType>() {
             @Override
             public String toString(ActionType actionType) {
-                return resourceBundle.getString("task." + actionType.getName());
+                return AutoInstallMain.this.resourceBundle.getString("task." + actionType.getName());
             }
         });
 
@@ -134,8 +144,9 @@ public class AutoInstallController implements Initializable {
         bindToSelectedItemProperty(taskDescriptionTextField.textProperty(), "description");
         bindToSelectedItemProperty(taskConditionsTextArea.textProperty(), "conditions");
         updateSceneForSelectedTreeItem(null);
-
     }
+
+
 
     @FXML
     public void newInstallation() {
@@ -204,22 +215,6 @@ public class AutoInstallController implements Initializable {
         System.out.println("install");
     }
 
-    public void initStage(final Stage stage) {
-        this.stage = stage;
-        this.document = new DocumentViewModel();
-        Events.listen(document, UIEvent.CHANGE, new SimpleListener<DocumentViewModel, UIEvent, Object>() {
-            @Override
-            public void onEvent(DocumentViewModel document, UIEvent type, Object data) {
-                final String title = resourceBundle.getString("key.title");
-                stage.setTitle(title + " [" + document.getDocumentPath() +
-                        (document.isModified() ? " *" : "") + "]");
-            }
-        });
-        document.markNew(resourceBundle.getString(DocumentViewModel.KEY_NEW_NAME) + "." +
-                serializerFactory.getDefaultExtension());
-    }
-
-
     private File showSaveDialog() {
         final FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle(resourceBundle.getString("key.save"));
@@ -261,7 +256,7 @@ public class AutoInstallController implements Initializable {
         Image icon = cachedIcons.get(actionType);
         if (icon == null) {
             icon = new Image(
-                    AutoInstallController.class.getResource(actionType.getName() + "-action.png").toExternalForm());
+                    AutoInstallMain.class.getResource("icons/"+ actionType.getName() + "-action.png").toExternalForm());
             cachedIcons.put(actionType, icon);
         }
         return new ImageView(icon);
@@ -305,8 +300,7 @@ public class AutoInstallController implements Initializable {
     private TaskViewModel createTaskViewModel(String initialDescriptionKey) {
         final TaskViewModel taskItem = new TaskViewModel();
         taskItem.getValue().setDescription(resourceBundle.getString(initialDescriptionKey));
-        taskItem.getValue().setActionType(ActionType.NULL);
-        taskItem.setGraphic(getIconByActionType(ActionType.NULL));
+        taskItem.setGraphic(getIconByActionType(taskItem.getValue().getActionType()));
         bindViewModelListeners(taskItem);
         return taskItem;
     }
