@@ -30,10 +30,14 @@ public class JavaFxUtils {
 
     private static final Effect DISABLED_EFFECT = new ColorAdjust(0, -1, 0, 0);
 
+    public static double center(double offset, double size1, double size2) {
+        return offset + size1/2 - size2/2;
+    }
+
     public static void centerRelativeToOwner(Stage stage) {
         final Window owner = stage.getOwner();
-        stage.setX(owner.getX() + owner.getWidth()/2 - stage.getWidth()/2);
-        stage.setY(owner.getY() + owner.getHeight()/2 - stage.getHeight()/2);
+        stage.setX(center(owner.getX(), owner.getWidth(), stage.getWidth()));
+        stage.setY(center(owner.getY(), owner.getHeight(), stage.getHeight()));
     }
 
     public static void setDisabledWithEffect(Node view, boolean disable) {
