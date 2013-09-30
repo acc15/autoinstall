@@ -40,10 +40,6 @@ public class AutoInstallMain implements StageController {
     private static final String TASK_INITIAL_DESCRIPTION = "task.initialDescription";
     private static final String TASK_ROOT_INITIAL_DESCRIPTION = "task.rootInitialDescription";
 
-    private static final int MIN_WIDTH = 500;
-    private static final int MIN_HEIGHT = 300;
-
-
     @FXML
     private TreeView<TaskItemModel> taskList;
 
@@ -100,14 +96,10 @@ public class AutoInstallMain implements StageController {
     public void initialize(Stage stage, ResourceBundle resourceBundle) {
         this.resourceBundle = resourceBundle;
         this.stage = stage;
-
-        stage.setMinWidth(MIN_WIDTH);
-        stage.setMinHeight(MIN_HEIGHT);
-
         Events.listen(document, UIEvent.CHANGE, new SimpleListener<DocumentViewModel, UIEvent, Object>() {
             @Override
             public void onEvent(DocumentViewModel document, UIEvent type, Object data) {
-                final String title = AutoInstallMain.this.resourceBundle.getString("fxml.title");
+                final String title = AutoInstallMain.this.resourceBundle.getString("stage.title");
                 AutoInstallMain.this.stage.setTitle(title + " [" + document.getDocumentPath() +
                         (document.isModified() ? " *" : "") + "]");
             }

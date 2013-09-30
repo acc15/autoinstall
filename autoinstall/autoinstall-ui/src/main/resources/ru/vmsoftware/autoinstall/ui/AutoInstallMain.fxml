@@ -50,7 +50,7 @@
   </MenuBar>
   <AnchorPane prefHeight="405.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
     <children>
-      <Label fx:id="titleLabel" prefHeight="14.0" text="%fxml.title" textAlignment="LEFT" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="16.0">
+      <Label fx:id="titleLabel" prefHeight="14.0" text="%stage.title" textAlignment="LEFT" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="16.0">
         <labelFor>
           <Button fx:id="installButton" alignment="CENTER" mnemonicParsing="false" onAction="#installClick" prefHeight="22.0" prefWidth="83.0" text="%key.installButton" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="14.0" />
         </labelFor>

@@ -2,6 +2,7 @@ package ru.vmsoftware.autoinstall.ui.javafx;
 
 import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -10,6 +11,7 @@ import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.Effect;
 import javafx.scene.image.Image;
 import javafx.stage.FileChooser;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.util.Callback;
@@ -34,10 +36,20 @@ public class JavaFxUtils {
         return offset + size1/2 - size2/2;
     }
 
-    public static void centerRelativeToOwner(Stage stage) {
-        final Window owner = stage.getOwner();
-        stage.setX(center(owner.getX(), owner.getWidth(), stage.getWidth()));
-        stage.setY(center(owner.getY(), owner.getHeight(), stage.getHeight()));
+    public static void centerRelativeTo(Stage stage, Rectangle2D bounds) {
+        stage.setX(center(bounds.getMinX(), bounds.getWidth(), stage.getWidth()));
+        stage.setY(center(bounds.getMinY(), bounds.getHeight(), stage.getHeight()));
+    }
+
+    public static Rectangle2D getScreenBounds() {
+        return Screen.getPrimary().getBounds();
+    }
+
+    public static Rectangle2D getWindowBounds(Window window) {
+        return new Rectangle2D(window.getX(),
+                window.getY(),
+                window.getX() + window.getWidth(),
+                window.getY() + window.getHeight());
     }
 
     public static void setDisabledWithEffect(Node view, boolean disable) {
@@ -65,6 +77,7 @@ public class JavaFxUtils {
         return resourceBundle.containsKey(key) ? resourceBundle.getString(key) : defaultValue;
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> T getValueOrDefault(ResourceBundle resourceBundle, String key, T defaultValue) {
         if (!resourceBundle.containsKey(key)) {
             return defaultValue;
@@ -72,7 +85,7 @@ public class JavaFxUtils {
         final String stringValue = resourceBundle.getString(key);
         final T value;
         try {
-            value = (T)defaultValue.getClass().getMethod("valueOf", String.class).invoke(stringValue);
+            value = (T)defaultValue.getClass().getMethod("valueOf", String.class).invoke(null, stringValue);
         } catch (IllegalAccessException|InvocationTargetException|NoSuchMethodException e) {
             throw new RuntimeException("unable to invoke \"valueOf\" method for class " + defaultValue.getClass(), e);
         }
@@ -80,7 +93,12 @@ public class JavaFxUtils {
     }
 
     public static Stage createStage(final StageController stageController) {
+        return createStage(stageController, null);
+    }
 
+    public static Stage createStage(final StageController stageController, final Window owner) {
+
+        final String stagePrefix = "stage.";
         final Class<?> clazz = stageController.getClass();
         final String className = clazz.getName();
         final String simpleClassName = clazz.getSimpleName();
@@ -88,14 +106,34 @@ public class JavaFxUtils {
         final Stage stage = new Stage();
         final ResourceBundle resourceBundle = ResourceBundle.getBundle(className);
 
-        if (!getValueOrDefault(resourceBundle, "fxml.disable", false)) {
-            final String fxmlPath = getStringOrDefault(resourceBundle, "fxml.path", simpleClassName + ".fxml");
+        stage.initOwner(owner);
+        stage.initStyle(getValueOrDefault(resourceBundle, stagePrefix + "style", stage.getStyle()));
+        stage.initModality(getValueOrDefault(resourceBundle, stagePrefix + "modality", stage.getModality()));
+        stage.setResizable(getValueOrDefault(resourceBundle, stagePrefix + "resizable", stage.isResizable()));
+        stage.setMinWidth(getValueOrDefault(resourceBundle, stagePrefix + "minWidth", stage.getMinWidth()));
+        stage.setMinHeight(getValueOrDefault(resourceBundle, stagePrefix + "minHeight", stage.getMinHeight()));
+        stage.setMaxWidth(getValueOrDefault(resourceBundle, stagePrefix + "maxWidth", stage.getMaxWidth()));
+        stage.setMaxHeight(getValueOrDefault(resourceBundle, stagePrefix + "maxHeight", stage.getMaxHeight()));
+        stage.setWidth(getValueOrDefault(resourceBundle, stagePrefix + "width", stage.getMinWidth()));
+        stage.setHeight(getValueOrDefault(resourceBundle, stagePrefix + "height", stage.getMinHeight()));
+
+        if (getValueOrDefault(resourceBundle, stagePrefix + "centerOwner", true)) {
+            final Rectangle2D rectangle2D = owner != null ? getWindowBounds(owner) : getScreenBounds();
+            JavaFxUtils.centerRelativeTo(stage, rectangle2D);
+        }
+
+        stage.setTitle(getStringOrDefault(resourceBundle, stagePrefix + "title", null));
+
+        final URL iconUrl = clazz.getResource(getStringOrDefault(resourceBundle, stagePrefix + "icon", simpleClassName + ".png"));
+        if (iconUrl != null) {
+            stage.getIcons().add(new Image(iconUrl.toExternalForm()));
+        }
+
+        if (!getValueOrDefault(resourceBundle, stagePrefix + "disable", false)) {
+            final String fxmlPath = getStringOrDefault(resourceBundle, stagePrefix + "fxml", simpleClassName + ".fxml");
             final URL fxmlUrl = clazz.getResource(fxmlPath);
             final FXMLLoader loader = new FXMLLoader(fxmlUrl, resourceBundle);
             final Callback<Class<?>, Object> initialFactory = loader.getControllerFactory();
-
-            // I need to keep reference to controller in FXML to make SceneBuilder working
-            // This is because i can't simple setController
             loader.setControllerFactory(new Callback<Class<?>, Object>() {
                 @Override
                 public Object call(Class<?> aClass) {
@@ -112,12 +150,6 @@ public class JavaFxUtils {
                 throw new RuntimeException("unable to load scene from url: " + fxmlUrl);
             }
         }
-
-        final URL iconUrl = clazz.getResource(getStringOrDefault(resourceBundle, "fxml.icon", simpleClassName));
-        if (iconUrl != null) {
-            stage.getIcons().add(new Image(iconUrl.toExternalForm()));
-        }
-        stage.setTitle(getStringOrDefault(resourceBundle, "fxml.title", null));
 
         stageController.initialize(stage, resourceBundle);
         return stage;
