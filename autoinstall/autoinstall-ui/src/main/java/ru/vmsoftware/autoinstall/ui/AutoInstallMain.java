@@ -1,23 +1,23 @@
 package ru.vmsoftware.autoinstall.ui;
 
 import com.sun.javafx.collections.ObservableListWrapper;
-import javafx.application.Platform;
 import javafx.beans.property.Property;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import ru.vmsoftware.autoinstall.core.actions.ActionType;
 import ru.vmsoftware.autoinstall.core.serialization.SerializationUtils;
 import ru.vmsoftware.autoinstall.core.serialization.SerializerFactory;
 import ru.vmsoftware.autoinstall.core.serialization.TaskSerializerFactory;
 import ru.vmsoftware.autoinstall.core.task.Task;
-import ru.vmsoftware.autoinstall.ui.dialog.UnsavedChangesDialog;
 import ru.vmsoftware.autoinstall.ui.dialog.YesNoCancelEnum;
 import ru.vmsoftware.autoinstall.ui.javafx.*;
 import ru.vmsoftware.autoinstall.ui.model.DocumentViewModel;
@@ -26,9 +26,13 @@ import ru.vmsoftware.autoinstall.ui.model.TaskItemModel;
 import ru.vmsoftware.autoinstall.ui.model.TaskViewModel;
 import ru.vmsoftware.events.Events;
 import ru.vmsoftware.events.listeners.SimpleListener;
+import ru.vmsoftware.javafx.dialogs.Dialog;
+import ru.vmsoftware.javafx.dialogs.DialogIcon;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.*;
 
 /**
@@ -96,6 +100,16 @@ public class AutoInstallMain implements StageController {
     public void initialize(Stage stage, ResourceBundle resourceBundle) {
         this.resourceBundle = resourceBundle;
         this.stage = stage;
+
+        this.stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent windowEvent) {
+                if (!checkForUnsavedChanges()) {
+                    windowEvent.consume();
+                }
+            }
+        });
+
         Events.listen(document, UIEvent.CHANGE, new SimpleListener<DocumentViewModel, UIEvent, Object>() {
             @Override
             public void onEvent(DocumentViewModel document, UIEvent type, Object data) {
@@ -170,7 +184,7 @@ public class AutoInstallMain implements StageController {
         if (!checkForUnsavedChanges()) {
             return;
         }
-        Platform.exit();
+        stage.close();
     }
 
     @FXML
@@ -221,7 +235,20 @@ public class AutoInstallMain implements StageController {
             return true;
         }
 
-        final YesNoCancelEnum userChoice = UnsavedChangesDialog.showDialog(stage);
+
+        final StringWriter s = new StringWriter();
+        new Exception().printStackTrace(new PrintWriter(s));
+
+        final YesNoCancelEnum userChoice = Dialog.withDefault(YesNoCancelEnum.CANCEL).
+                icon(DialogIcon.WARNING).
+                title("Unsaved").
+                message("Unsaved changes").
+                defaultButton("Save", YesNoCancelEnum.YES).
+                button("Don't save", YesNoCancelEnum.NO).
+                cancelButton("Cancel", YesNoCancelEnum.CANCEL).
+                details("Stacktrace", s.toString()).
+                show(stage);
+
         switch (userChoice) {
             case YES:
                 final File file = showSaveDialog();

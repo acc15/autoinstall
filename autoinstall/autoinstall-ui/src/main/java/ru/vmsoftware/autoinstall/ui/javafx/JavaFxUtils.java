@@ -4,12 +4,12 @@ import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TreeItem;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.Effect;
 import javafx.scene.image.Image;
+import javafx.scene.layout.Region;
 import javafx.stage.FileChooser;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -48,8 +48,8 @@ public class JavaFxUtils {
     public static Rectangle2D getWindowBounds(Window window) {
         return new Rectangle2D(window.getX(),
                 window.getY(),
-                window.getX() + window.getWidth(),
-                window.getY() + window.getHeight());
+                window.getWidth(),
+                window.getHeight());
     }
 
     public static void setDisabledWithEffect(Node view, boolean disable) {
@@ -96,6 +96,11 @@ public class JavaFxUtils {
         return createStage(stageController, null);
     }
 
+    private static double doubleOrDefault(double v, double def) {
+        return Double.isInfinite(v) || Double.isNaN(v) ? def : v;
+    }
+
+
     public static Stage createStage(final StageController stageController, final Window owner) {
 
         final String stagePrefix = "stage.";
@@ -105,29 +110,6 @@ public class JavaFxUtils {
 
         final Stage stage = new Stage();
         final ResourceBundle resourceBundle = ResourceBundle.getBundle(className);
-
-        stage.initOwner(owner);
-        stage.initStyle(getValueOrDefault(resourceBundle, stagePrefix + "style", stage.getStyle()));
-        stage.initModality(getValueOrDefault(resourceBundle, stagePrefix + "modality", stage.getModality()));
-        stage.setResizable(getValueOrDefault(resourceBundle, stagePrefix + "resizable", stage.isResizable()));
-        stage.setMinWidth(getValueOrDefault(resourceBundle, stagePrefix + "minWidth", stage.getMinWidth()));
-        stage.setMinHeight(getValueOrDefault(resourceBundle, stagePrefix + "minHeight", stage.getMinHeight()));
-        stage.setMaxWidth(getValueOrDefault(resourceBundle, stagePrefix + "maxWidth", stage.getMaxWidth()));
-        stage.setMaxHeight(getValueOrDefault(resourceBundle, stagePrefix + "maxHeight", stage.getMaxHeight()));
-        stage.setWidth(getValueOrDefault(resourceBundle, stagePrefix + "width", stage.getMinWidth()));
-        stage.setHeight(getValueOrDefault(resourceBundle, stagePrefix + "height", stage.getMinHeight()));
-
-        if (getValueOrDefault(resourceBundle, stagePrefix + "centerOwner", true)) {
-            final Rectangle2D rectangle2D = owner != null ? getWindowBounds(owner) : getScreenBounds();
-            JavaFxUtils.centerRelativeTo(stage, rectangle2D);
-        }
-
-        stage.setTitle(getStringOrDefault(resourceBundle, stagePrefix + "title", null));
-
-        final URL iconUrl = clazz.getResource(getStringOrDefault(resourceBundle, stagePrefix + "icon", simpleClassName + ".png"));
-        if (iconUrl != null) {
-            stage.getIcons().add(new Image(iconUrl.toExternalForm()));
-        }
 
         if (!getValueOrDefault(resourceBundle, stagePrefix + "disable", false)) {
             final String fxmlPath = getStringOrDefault(resourceBundle, stagePrefix + "fxml", simpleClassName + ".fxml");
@@ -144,11 +126,44 @@ public class JavaFxUtils {
                     }
                 }
             });
+
+            final Region parent;
             try {
-                stage.setScene(new Scene((Parent)loader.load()));
+                parent = (Region) loader.load();
             } catch (IOException e) {
                 throw new RuntimeException("unable to load scene from url: " + fxmlUrl);
             }
+
+            stage.setWidth(doubleOrDefault(parent.getPrefWidth(), stage.getWidth()));
+            stage.setHeight(doubleOrDefault(parent.getPrefHeight(), stage.getHeight()));
+            stage.setMinWidth(doubleOrDefault(parent.getMinWidth(), stage.getWidth()));
+            stage.setMinHeight(doubleOrDefault(parent.getMinHeight(), stage.getHeight()));
+            stage.setMaxWidth(doubleOrDefault(parent.getMaxWidth(), stage.getMaxWidth()));
+            stage.setMaxHeight(doubleOrDefault(parent.getMaxHeight(), stage.getMaxHeight()));
+
+            stage.setScene(new Scene(parent));
+        }
+
+        stage.initOwner(owner);
+        stage.initStyle(getValueOrDefault(resourceBundle, stagePrefix + "style", stage.getStyle()));
+        stage.initModality(getValueOrDefault(resourceBundle, stagePrefix + "modality", stage.getModality()));
+        stage.setResizable(getValueOrDefault(resourceBundle, stagePrefix + "resizable", stage.isResizable()));
+        stage.setMinWidth(getValueOrDefault(resourceBundle, stagePrefix + "minWidth", stage.getMinWidth()));
+        stage.setMinHeight(getValueOrDefault(resourceBundle, stagePrefix + "minHeight", stage.getMinHeight()));
+        stage.setMaxWidth(getValueOrDefault(resourceBundle, stagePrefix + "maxWidth", stage.getMaxWidth()));
+        stage.setMaxHeight(getValueOrDefault(resourceBundle, stagePrefix + "maxHeight", stage.getMaxHeight()));
+        stage.setWidth(getValueOrDefault(resourceBundle, stagePrefix + "width", stage.getWidth()));
+        stage.setHeight(getValueOrDefault(resourceBundle, stagePrefix + "height", stage.getHeight()));
+
+        if (getValueOrDefault(resourceBundle, stagePrefix + "centerOwner", true)) {
+            final Rectangle2D rectangle2D = owner != null ? getWindowBounds(owner) : getScreenBounds();
+            JavaFxUtils.centerRelativeTo(stage, rectangle2D);
+        }
+        stage.setTitle(getStringOrDefault(resourceBundle, stagePrefix + "title", null));
+
+        final URL iconUrl = clazz.getResource(getStringOrDefault(resourceBundle, stagePrefix + "icon", simpleClassName + ".png"));
+        if (iconUrl != null) {
+            stage.getIcons().add(new Image(iconUrl.toExternalForm()));
         }
 
         stageController.initialize(stage, resourceBundle);
