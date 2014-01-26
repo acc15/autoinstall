@@ -1,8 +1,5 @@
 package ru.vmsoftware.autoinstall.ui.model;
 
-import ru.vmsoftware.autoinstall.ui.UIEvent;
-import ru.vmsoftware.events.Events;
-
 /**
  * @author Vyacheslav Mayorov
  * @since 2013-19-09
@@ -11,9 +8,14 @@ public class DocumentViewModel {
 
     public static final String KEY_NEW_NAME = "key.newName";
 
+    public static interface OnChangeListener {
+        void onChange();
+    }
+
     private String documentPath;
     private boolean isNew;
     private boolean modified;
+    private OnChangeListener listener;
 
     private void setValues(String path, boolean modified) {
         if (path.equals(documentPath) && this.modified == modified) {
@@ -21,7 +23,17 @@ public class DocumentViewModel {
         }
         this.documentPath = path;
         this.modified = modified;
-        Events.emit(this, UIEvent.CHANGE);
+        if (listener != null) {
+            listener.onChange();
+        }
+    }
+
+    public OnChangeListener getListener() {
+        return listener;
+    }
+
+    public void setListener(OnChangeListener listener) {
+        this.listener = listener;
     }
 
     public String getDocumentPath() {

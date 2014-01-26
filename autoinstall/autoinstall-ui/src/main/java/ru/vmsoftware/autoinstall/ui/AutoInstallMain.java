@@ -24,15 +24,11 @@ import ru.vmsoftware.autoinstall.ui.model.DocumentViewModel;
 import ru.vmsoftware.autoinstall.ui.model.ParameterViewModel;
 import ru.vmsoftware.autoinstall.ui.model.TaskItemModel;
 import ru.vmsoftware.autoinstall.ui.model.TaskViewModel;
-import ru.vmsoftware.events.Events;
-import ru.vmsoftware.events.listeners.SimpleListener;
 import ru.vmsoftware.javafx.dialogs.Dialog;
 import ru.vmsoftware.javafx.dialogs.DialogIcon;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.*;
 
 /**
@@ -109,10 +105,9 @@ public class AutoInstallMain implements StageController {
                 }
             }
         });
-
-        Events.listen(document, UIEvent.CHANGE, new SimpleListener<DocumentViewModel, UIEvent, Object>() {
+        document.setListener(new DocumentViewModel.OnChangeListener() {
             @Override
-            public void onEvent(DocumentViewModel document, UIEvent type, Object data) {
+            public void onChange() {
                 final String title = AutoInstallMain.this.resourceBundle.getString("stage.title");
                 AutoInstallMain.this.stage.setTitle(title + " [" + document.getDocumentPath() +
                         (document.isModified() ? " *" : "") + "]");
@@ -236,9 +231,6 @@ public class AutoInstallMain implements StageController {
         }
 
 
-        final StringWriter s = new StringWriter();
-        new Exception().printStackTrace(new PrintWriter(s));
-
         final YesNoCancelEnum userChoice = Dialog.withDefault(YesNoCancelEnum.CANCEL).
                 icon(DialogIcon.WARNING).
                 title("Unsaved").
@@ -246,7 +238,6 @@ public class AutoInstallMain implements StageController {
                 defaultButton("Save", YesNoCancelEnum.YES).
                 button("Don't save", YesNoCancelEnum.NO).
                 cancelButton("Cancel", YesNoCancelEnum.CANCEL).
-                details("Stacktrace", s.toString()).
                 show(stage);
 
         switch (userChoice) {
